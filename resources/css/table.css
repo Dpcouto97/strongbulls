@@ -1,0 +1,128 @@
+/* Css relativo ao design das tabelas da aplicacao */
+/* ======================================== STYLING GERAL DAS TABELAS DE LISTAGEM ====================================*/
+/* ===================================================================================================================*/
+.table-container {
+    overflow-y: auto;
+    overflow-x: hidden !important;
+    border-radius: 3px;
+    margin-bottom: 10px;
+}
+
+.table-container .el-table {
+    border: none;
+    font-family: "Inter", sans-serif;
+    font-size: 15px;
+}
+
+
+/* CSS HEADER DA TABELA */
+.table-container .el-table__header th {
+    background-color: #1D3A32 !important;
+    color: #FFD400 !important;
+    font-size: 14px;
+}
+
+/*======== Inputs e Selects CSS ==========*/
+/* Cor de fundo do input e do select */
+.table-container .filter-controls .el-input__wrapper,
+.filter-controls .el-select__wrapper {
+    background-color: #FFFFFF !important;
+    border-radius: 4px;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+/* Select text color e placeholder text color */
+.table-container .filter-controls .el-select__placeholder,
+.table-container .filter-controls .el-input__inner::placeholder {
+    color: #11122b !important;
+}
+
+/* ======== SEPARACAO DAS LINHAS DA TABELA ===========  */
+
+.table-container .el-table__body tr td {
+    /* Trata da cor de fundo e espaçamento das linhas da tabela */
+    padding: 8px 4px;
+    background-color: #FFFFFF !important;
+    border-bottom: none !important;
+    color: black;
+}
+
+/* Trata do espaçamento entre linhas e colunas da tabela */
+.table-container .el-table__body-wrapper table {
+    background-color:#F9F9FC;
+    border-collapse: separate !important;
+    border-spacing: 0 5px; /* columns,  - NOTA: AQUI ERA SUPOSTO SER 1PX 5PX mas o problema e que ao adicionar espacamento horizontal a tabela ganha um scroll horizontal e eu nao quero isso. */
+}
+
+/* ======== HIGHLIGHT DA LINHA QUANDO MOUSE HOVER ========  */
+.table-container .el-table__body .el-table__row:hover,
+.table-container .el-table__body .el-table__row:hover > td {
+    background-color: #E9E8E8 !important;
+    cursor: pointer;
+}
+
+/* ======= Styling do icon Add/Edit/Details/ Delete ===== */
+.table-container .add-button {
+    color: #FFD400;
+    display:flex;
+    align-items: flex-end;
+    gap:2px;
+    text-decoration: underline;
+}
+
+.table-container .add-button:hover{
+    color: #FDEDC8;
+}
+
+.table-container .edit-button:hover,
+.table-container .details-button:hover {
+    color: #60a5fa;
+}
+
+.table-container .delete-button:hover {
+    color: red;
+}
+
+/*  Alinha os icons Edit, eliminar e details na vertical  */
+.icon-button{
+    display: flex;
+    align-items: center;
+}
+
+/* Organizacao dos icones na tabela + efeito de aparecimento dos icones */
+.table-container .row-actions {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    visibility:hidden;
+}
+
+/* Faz icones de açao aparecer */
+.table-container .el-table__row:hover .row-actions {
+    opacity: 1;
+    visibility:visible;
+}
+
+/* Botao da paginacao */
+.el-pagination .el-pager li.is-active {
+    background-color: #FFFFFF !important; /* your custom color */
+    color: black !important;
+    border-radius: 4px;
+}
+
+.el-scrollbar__wrap {
+    margin-bottom: -4px !important; /* para esconder a linha cinzenta que existe no final das tabelas , solução temporária*/
+}
+
+/*SECTION SEARCHBAR TABELAS */
+.white-bg-input .el-input__inner {
+    background-color: white!important;
+}
+
+.white-bg-input .el-input__wrapper {
+    background-color: white !important;
+    box-shadow: none !important;
+    border: none !important;
+}
+/*ENDSECTION*/

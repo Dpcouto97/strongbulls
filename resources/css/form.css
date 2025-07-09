@@ -1,0 +1,78 @@
+/* ==== CSS PARA OS FORMULARIOS EM GERAL ==== */
+
+/* Define o tamanho do modal */
+.custom-dialog .el-dialog__body {
+    display: flex;
+    flex-direction: column;
+    max-height: 70vh; /* 70% do tamanho vertical do  ecra */
+}
+
+/* Trata a cor e a grossura das labels do form */
+.custom-dialog .el-form-item__label {
+    font-weight: 500;
+    color: #333;
+}
+
+/* Trata do scroll do formulario */
+.custom-dialog .el-form {
+    overflow-y: auto;
+    flex: 1; /* Take up available space */
+    padding: 20px;
+}
+
+/* Garante que o footer fica fixo */
+.custom-dialog .el-dialog__footer {
+    border-top: 1px solid #eee;
+    padding-top: 15px;
+    background: #fff;
+    position: sticky;
+    bottom: 0;
+    z-index: 10;
+}
+
+/* Garante que o Header fica fixo */
+.custom-dialog .el-dialog__header {
+    background: #fff;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    padding-bottom: 0;
+}
+
+/* Garante que o Titulo do header caso seja muito longo nao troque de linha e apenas coloque "..." a frente no overflow */
+.custom-dialog .dialog-title {
+    white-space: nowrap;
+    overflow: hidden;           /* Esconde o texto que esbordou */
+    text-overflow: ellipsis;    /* Adiciona '...' no final do texto */
+    width: 100%;
+    display: inline-block;      /* Garante que o titulo se comporta como um inline block */
+}
+
+/* Trata a cor e transicao do save button */
+.save-button {
+    background-color: #1D3A32;
+
+    &:hover {
+        background-color: #2E5D4F;
+    }
+}
+
+/* Retira border do input dos el-selects */
+.el-select__input {
+    outline: none !important;
+    box-shadow: none !important;
+    border: none !important;
+}
+
+/* Retira a possibilidade de resize dos campos textarea do formulario */
+.no-resize-textarea textarea {
+    resize: none;
+}
+
+/* Css para retirar borda dos inputs do formulario */
+.el-input__wrapper, .el-input__inner, .el-input-tag__input, .el-input-tag__wrapper, .el-textarea__inner {
+    background-color: #F2F2F2 !important;
+    border-radius: 4px;
+    border: none !important;
+    box-shadow: none !important;
+}

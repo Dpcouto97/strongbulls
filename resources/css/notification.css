@@ -1,0 +1,31 @@
+/* Design do simbolo do warning "!" caso esteja  a ser utilizado */
+.custom-confirm-box .el-message-box__status {
+    background-color: white !important;
+    color: #b07b52;
+    border-radius: 50%;
+    font-size: 30px;
+}
+
+/* Botao de confirmar */
+.custom-confirm-box .el-button--primary {
+    background-color: #596c92;
+    border-color: #596c92;
+    color: white;
+    font-weight: 500;
+
+    &:hover {
+        background-color: #7a8fba;
+    }
+}
+
+/* Botao default */
+.custom-confirm-box .el-button--default {
+    border: 1px solid #ccc;
+    font-weight: 500;
+}
+
+/* Tamanho dos botoes */
+.el-message-box__btns .el-button {
+    width:45%;
+    border-radius: 0;
+}
