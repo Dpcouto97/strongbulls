@@ -253,7 +253,7 @@ const getTableData = async () => {
     try {
         isLoading.value = true;
         //Chamada GET API
-        const response = await axios.get("/api/products", { params: filters });
+        const response = await axios.get("/api/evaluations", { params: filters });
 
         if (response.data.success) {
             tableData.value = response.data.data.list.data;

@@ -24,6 +24,7 @@ return new class extends Migration
             $table->decimal('bone_mass', 8, 2)->nullable();     // Massa Ossea
             $table->decimal('body_fat', 8, 2)->nullable();      // Gordura Corporal
             $table->decimal('body_water', 8, 2)->nullable();    // Agua no Corpo
+            $table->text('attachments')->nullable();
             $table->text('description')->nullable();
             $table->timestamps();
             $table->softDeletes();  // Adiciona a coluna deleted_at através do softDeletes
