@@ -5,13 +5,30 @@
                 <div class="main-content">
                     <!-- Container com ICON + TITULO-->
                     <div class="title-container flex items-center space-x-2">
-                        <span class="material-symbols-outlined" style="color: #1d3a32">monitoring</span>
-                        <h1 class="title" style="color: #1d3a32">{{ $t('evaluations') }}</h1>
+                        <span class="material-symbols-outlined" style="color: #1d3a32">health_metrics</span>
+                        <h1 class="title" style="color: #1d3a32">{{ $t("evaluations") }}</h1>
                     </div>
                     <div class="filter-controls mb-3">
                         <div class="left-filter-container">
-                            <div class="filter-text">Filter by:</div>
+                            <span class="material-symbols-outlined" style="font-size:25px;">manage_search</span>
                             <div class="filter-controls flex-1">
+                                <!-- Date Range Filter -->
+                                <el-date-picker
+                                    clas="date-filter"
+                                    v-model="dateFilter"
+                                    type="daterange"
+                                    unlink-panels
+                                    range-separator="To"
+                                    start-placeholder="Start date"
+                                    end-placeholder="End date"
+                                    :shortcuts="shortcuts"
+                                    size="default"
+                                    format="DD-MM-YYYY"
+                                    value-format="YYYY-MM-DD"
+                                    @change="getTableData"
+                                />
+
+                              <!-- Client Filter -->
                                 <el-select
                                     v-model="clientFilter"
                                     placeholder="Clients"
@@ -31,22 +48,16 @@
                                 </el-select>
                             </div>
                         </div>
-                        <div class="right-filter-container">
-                            <div><span class="material-symbols-outlined" style="font-size: 25px">search</span></div>
-                            <el-input
-                                style="width: 280px"
-                                placeholder="Search..."
-                                v-model="searchFilter"
-                                search
-                                clearable
-                                @change="getTableData"
-                                class="white-bg-input"
-                            />
-                        </div>
                     </div>
                     <!-- Container TABELA/LISTA -->
                     <div class="table-container">
-                        <el-table :data="tableData" style="width: 100%" max-height="auto" v-loading="isLoading">
+                        <el-table
+                            :data="tableData"
+                            style="width: 100%"
+                            max-height="auto"
+                            @sort-change="handleSortChange"
+                            v-loading="isLoading"
+                        >
                             <el-table-column
                                 v-for="col in tableColumns"
                                 :key="col.property"
@@ -54,25 +65,13 @@
                                 :min-width="col.minWidth"
                                 :align="col.align"
                                 :formatter="col.formatter"
+                                :sortable="col.sortable"
                                 class-name="left-gap"
                             >
-                                <template #header>
-                                    <div class="flex items-center gap-2">
+                                <template #header="{ column }">
+                                    <span class="flex items-center gap-2">
                                         <span class="material-symbols-outlined">{{ col.icon }}</span>
                                         <span class="leading-none text-sm">{{ col.label }}</span>
-                                    </div>
-                                </template>
-
-                                <template #default="{ row }">
-                                    <span
-                                        v-if="col.property === 'client'"
-                                        class="truncated-cell"
-                                        :title="col.formatter(row)"
-                                    >
-                                        {{ col.formatter(row) }}
-                                    </span>
-                                    <span v-else>
-                                        {{ col.formatter ? col.formatter(row) : row[col.property] }}
                                     </span>
                                 </template>
                             </el-table-column>
@@ -136,7 +135,7 @@
                     </div>
 
                     <!-- Modal de criacao/Edicao de Produto -->
-                    <product-modal
+                    <evaluation-modal
                         ref="product"
                         v-model:visible="showModal"
                         :edit-mode="editMode"
@@ -145,8 +144,12 @@
                         @update="getTableData"
                     />
 
-                    <!-- Modal Detalhes do Produto -->
-                    <product-details-modal ref="providerDetails" v-model:visible="showDetailsModal" :data="rowData" />
+                    <!-- Modal Detalhes da Avaliação -->
+                    <evaluation-details-modal
+                        ref="evaluationDetails"
+                        v-model:visible="showDetailsModal"
+                        :data="rowData"
+                    />
                 </div>
             </div>
         </div>
@@ -155,8 +158,8 @@
 
 <script setup>
 import { ref, onMounted, computed } from "vue";
-import ProductModal from "@/Components/Modals/Product/productModal.vue";
-import ProductDetailsModal from "@/Components/Modals/Product/productDetailsModal.vue";
+import EvaluationModal from "@/Components/Modals/Evaluation/evaluationModal.vue";
+import EvaluationDetailsModal from "@/Components/Modals/Evaluation/evaluationDetailsModal.vue";
 import axios from "axios";
 import { ElNotification } from "element-plus";
 import { ElMessageBox } from "element-plus";
@@ -164,13 +167,7 @@ import { usePage } from "@inertiajs/vue3";
 import "../../../css/table.css";
 import "../../../css/notification.css";
 import AppLayout from "@/Layouts/AppLayout.vue";
-import productIcon from "@/Icons/product.svg?url";
-import userIcon from "@/Icons/user.svg?url";
-import locationIcon from "@/Icons/location.svg?url";
-import carIcon from "@/Icons/car.svg?url";
-import priceIcon from "@/Icons/euro.svg?url";
-import providerIcon from "@/Icons/provider.svg?url";
-import clientIcon from "@/Icons/client.svg?url";
+import moment from "moment";
 
 //Defne o nome dado ao ficheiro
 defineOptions({
@@ -191,18 +188,81 @@ const rowData = ref(null);
 const isLoading = ref(false);
 const tableData = ref([]);
 const clientFilter = ref([]);
-const searchFilter = ref(null);
+const dateFilter = ref([]);
 const clientsList = ref([]);
 const pageSize = ref(10);
 const currentPage = ref(1);
 const totalItems = ref(0);
 const can_create = ref(false); //Permissao Add
+const sortColumn = ref(null);
+const sortOrder = ref(null);
 
-// Acesso a toda a informacao da pagina, especialmente o utilizador logado
-const pageInfo = usePage();
+const shortcuts = [
+    {
+        text: "Today",
+        value: () => {
+            const today = new Date();
+            const start = new Date(today.setHours(0, 0, 0, 0));
+            const end = new Date();
+            return [start, end];
+        },
+    },
+    {
+        text: "Last week",
+        value: () => {
+            const end = new Date();
+            const start = new Date();
+            start.setDate(end.getDate() - 7);
+            return [start, end];
+        },
+    },
+    {
+        text: "Last month",
+        value: () => {
+            const end = new Date();
+            const start = new Date();
+            start.setDate(end.getDate() - 30);
+            return [start, end];
+        },
+    },
+    {
+        text: "Current month",
+        value: () => {
+            const now = new Date();
+            const start = new Date(now.getFullYear(), now.getMonth(), 1);
+            const end = new Date();
+            return [start, end];
+        },
+    },
+    {
+        text: "Last 3 months",
+        value: () => {
+            const end = new Date();
+            const start = new Date();
+            start.setDate(end.getDate() - 90);
+            return [start, end];
+        },
+    },
+    {
+        text: "Last year",
+        value: () => {
+            const end = new Date();
+            const start = new Date();
+            start.setFullYear(end.getFullYear() - 1);
+            return [start, end];
+        },
+    },
+];
 
 //Variaveis Nao Reactivas nao precisam de 'ref', pois nao sao alteradas.
 const tableColumns = [
+    {
+        label: "Date",
+        property: "date",
+        formatter: (row) => moment(row.date).format("DD-MM-YYYY"),
+        icon: "calendar_today",
+        sortable: true,
+    },
     {
         label: "Client Name",
         property: "client_id",
@@ -210,33 +270,26 @@ const tableColumns = [
         icon: "person",
     },
     {
-        label: "Date",
-        property: "date",
-        formatter: (row) => (row.date),
-        icon: "calendar_today",
-    },
-    {
         label: "Weight",
         property: "weight",
-        formatter: (row) => (row.weight + "kg"),
+        formatter: (row) => (row.weight ? row.weight + " kg" : " - "),
         icon: "scale",
     },
     {
         label: "IMC",
         property: "imc",
-        formatter: (row) => (row.imc),
         icon: "straighten",
     },
     {
         label: "Body Fat",
         property: "body_fat",
-        formatter: (row) => (row.body_fat),
+        formatter: (row) => (row.body_fat ? row.body_fat + " %" : " - "),
         icon: "body_fat",
     },
     {
         label: "Muscle Mass",
         property: "muscle_mass",
-        formatter: (row) => (row.muscle_mass),
+        formatter: (row) => (row.muscle_mass ? row.muscle_mass + " kg" : " - "),
         icon: "exercise",
     },
 ];
@@ -245,9 +298,11 @@ const getTableData = async () => {
     //Busca a lista de Items da tabela da BD.
     let filters = {
         clientFilter: clientFilter.value,
-        searchFilter: searchFilter.value,
+        dateFilter: dateFilter.value,
         page: currentPage.value,
         pageSize: pageSize.value,
+        sortBy: sortColumn.value,
+        sortOrder: sortOrder.value,
     };
 
     try {
@@ -355,6 +410,14 @@ const deleteItem = async (id) => {
         });
     }
 };
+
+const handleSortChange = ({ column, prop, order }) => {
+    // Funcao que trata de ordenar por coluna e asc ou desc
+    sortColumn.value = prop;
+    sortOrder.value = order === "ascending" ? "asc" : order === "descending" ? "desc" : null;
+    getTableData();
+};
+
 const onRemoteOperation = (val) => {
     // Atualizo o pageSize e CurrentPage sempre que o valor é alterado
     pageSize.value = val;
@@ -384,7 +447,7 @@ const onRemoteOperation = (val) => {
 .left-filter-container {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 0.2rem;
 }
 
 .right-filter-container {

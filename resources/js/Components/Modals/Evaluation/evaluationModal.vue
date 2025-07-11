@@ -7,104 +7,147 @@
                     {{ editMode ? "edit_square" : "add_box" }}
                 </span>
                 <h2 class="text-2xl font-semibold text-gray-800">
-                    {{ editMode ? "Edit Client" : "Create Client" }}
+                    {{ editMode ? "Edit Evaluation" : "Create Evaluation" }}
                 </h2>
             </div>
         </template>
 
         <!--------------- FORMULARIO --------->
-        <el-form :model="form" :rules="rules" ref="formRef" label-position="top" label-width="120px" class="space-y-5">
-            <!-- Provider Name -->
-            <el-form-item label="Client Name" prop="name">
+        <el-form :model="form" ref="formRef" label-position="top" label-width="120px" class="space-y-5">
+            <!-- Date -->
+            <el-form-item label="Date" prop="date">
                 <template #label>
                     <div class="flex items-center space-x-1">
-                        <span class="material-symbols-outlined">person</span>
-                        <span>Name</span>
+                        <img :src="calendarIcon" alt="icon" class="w-4 h-4" />
+                        <span>Date</span>
                     </div>
                 </template>
-                <el-input v-model="form.name" placeholder="Write here..." />
+                <el-date-picker v-model="form.date" type="date" placeholder="Pick a date" value-format="YYYY-MM-DD" />
             </el-form-item>
 
-            <!-- EMAIL -->
-            <el-form-item label="Email" prop="email">
+            <!-- Cliente -->
+            <el-form-item label="Client" prop="client_id">
                 <template #label>
                     <div class="flex items-center space-x-1">
-                        <img :src="emailIcon" alt="icon" class="w-4 h-4 filter brightness-0" />
-                        <span>Email</span>
+                        <img :src="clientIcon" alt="icon" class="w-4 h-4 filter brightness-1 invert" />
+                        <span>Client</span>
                     </div>
                 </template>
-                <el-input v-model="form.email" placeholder="Write here..." clearable />
+                <el-select v-model="form.client_id" placeholder="Choose Client" clearable filterable>
+                    <el-option v-for="item in clientsList" :key="item.id" :label="item.name" :value="item.id" />
+                </el-select>
             </el-form-item>
 
-            <!-- PHONE NUMBER -->
-            <el-form-item label="Phone Number" prop="phone_number">
+            <!-- Weight -->
+            <el-form-item label="Weight" prop="weight">
                 <template #label>
                     <div class="flex items-center space-x-1">
-                        <img :src="phoneIcon" alt="icon" class="w-4 h-4" />
-                        <span>Phone Number</span>
+                        <img :src="scaleIcon" alt="icon" class="w-4 h-4 filter brightness-1 invert" />
+                        <span>Weight</span>
                     </div>
                 </template>
-                <el-input v-model="form.phone_number" placeholder="Write here..." />
-            </el-form-item>
-
-            <!-- ADDRESS -->
-            <el-form-item label="Address" prop="address">
-                <template #label>
-                    <div class="flex items-center space-x-1">
-                        <img :src="locationIcon" alt="icon" class="w-4 h-4" />
-                        <span>Address</span>
-                    </div>
-                </template>
-                <el-input v-model="form.address" placeholder="Write here..." />
-            </el-form-item>
-
-            <!-- NIF -->
-            <el-form-item label="NIF" prop="nif">
-                <template #label>
-                    <div class="flex items-center space-x-1">
-                        <img :src="nifIcon" alt="icon" class="w-4 h-4" />
-                        <span>NIF</span>
-                    </div>
-                </template>
-                <el-input v-model="form.nif" placeholder="Write here..." />
-            </el-form-item>
-
-            <!-- Height -->
-            <el-form-item label="Height" prop="height">
-                <template #label>
-                    <div class="flex items-center space-x-1">
-                        <img :src="rullerIcon" alt="icon" class="w-4 h-4 filter brightness-1 invert" />
-                        <span>Height</span>
-                    </div>
-                </template>
-                <el-input
-                    v-model.number="form.height"
-                    type="number"
-                    step="1"
-                    min="0"
-                    max="300"
-                    placeholder="0"
-                >
+                <el-input v-model.number="form.weight" type="number" step="0.1" min="0" placeholder="0">
                     <template #suffix>
-                        <span style="color: #333">cm</span>
+                        <span style="color: #333">Kg</span>
                     </template>
                 </el-input>
             </el-form-item>
 
-            <!-- Birth Date -->
-            <el-form-item label="Birth Date" prop="birth_date">
+            <!-- IMC -->
+            <el-form-item label="Imc" prop="imc">
                 <template #label>
                     <div class="flex items-center space-x-1">
-                        <img :src="birthDateIcon" alt="icon" class="w-4 h-4 filter brightness-1 invert" />
-                        <span>Birth Date</span>
+                        <img :src="rullerIcon" alt="icon" class="w-4 h-4 filter brightness-1 invert" />
+                        <span>IMC</span>
                     </div>
                 </template>
-                <el-date-picker
-                    v-model="form.birth_date"
-                    type="date"
-                    placeholder="Pick a date"
-                    value-format="YYYY-MM-DD"
-                />
+                <el-input v-model.number="form.imc" type="number" step="0.1" min="0" placeholder="0" />
+            </el-form-item>
+
+            <!-- Muscle Mass -->
+            <el-form-item label="Muscle Mass" prop="muscle_mass">
+                <template #label>
+                    <div class="flex items-center space-x-1">
+                        <img :src="muscleMassIcon" alt="icon" class="w-4 h-4 filter brightness-1 invert" />
+                        <span>Muscle Mass</span>
+                    </div>
+                </template>
+                <el-input v-model.number="form.muscle_mass" type="number" step="0.01" min="0" placeholder="0">
+                    <template #suffix>
+                        <span style="color: #333">Kg</span>
+                    </template>
+                </el-input>
+            </el-form-item>
+
+            <!-- Bone Mass -->
+            <el-form-item label="Bone Mass" prop="bone_mass">
+                <template #label>
+                    <div class="flex items-center space-x-1">
+                        <img :src="boneIcon" alt="icon" class="w-4 h-4 filter brightness-1 invert" />
+                        <span>Bone Mass</span>
+                    </div>
+                </template>
+                <el-input v-model.number="form.bone_mass" type="number" step="0.01" min="0" placeholder="0">
+                    <template #suffix>
+                        <span style="color: #333">Kg</span>
+                    </template>
+                </el-input>
+            </el-form-item>
+
+            <!-- Body Fat -->
+            <el-form-item label="Body Fat" prop="body_fat">
+                <template #label>
+                    <div class="flex items-center space-x-1">
+                        <img :src="bodyFatIcon" alt="icon" class="w-4 h-4 filter brightness-1 invert" />
+                        <span>Body Fat</span>
+                    </div>
+                </template>
+                <el-input v-model.number="form.body_fat" type="number" step="0.01" min="0" placeholder="0">
+                    <template #suffix>
+                        <span style="color: #333">%</span>
+                    </template>
+                </el-input>
+            </el-form-item>
+
+            <!-- Body Water -->
+            <el-form-item label="Body Water" prop="body_water">
+                <template #label>
+                    <div class="flex items-center space-x-1">
+                        <img :src="waterDropIcon" alt="icon" class="w-4 h-4 filter brightness-1 invert" />
+                        <span>Body Water</span>
+                    </div>
+                </template>
+                <el-input v-model.number="form.body_water" type="number" step="0.01" min="0" placeholder="0">
+                    <template #suffix>
+                        <span style="color: #333">%</span>
+                    </template>
+                </el-input>
+            </el-form-item>
+
+            <!-- Visceral Fat -->
+            <el-form-item label="Visceral Fat" prop="visceral_fat">
+                <template #label>
+                    <div class="flex items-center space-x-1">
+                        <img :src="visceralFatIcon" alt="icon" class="w-4 h-4 filter brightness-1 invert" />
+                        <span>Visceral Fat</span>
+                    </div>
+                </template>
+                <el-input v-model.number="form.visceral_fat" type="number" step="1" min="0" placeholder="0" />
+            </el-form-item>
+
+            <!-- BMR -->
+            <el-form-item label="BMR" prop="bmr">
+                <template #label>
+                    <div class="flex items-center space-x-1">
+                        <img :src="bmrIcon" alt="icon" class="w-4 h-4 filter brightness-1 invert" />
+                        <span>BMR</span>
+                    </div>
+                </template>
+                <el-input v-model.number="form.bmr" type="number" step="1" min="0" placeholder="0">
+                    <template #suffix>
+                        <span style="color: #333">Kcal</span>
+                    </template>
+                </el-input>
             </el-form-item>
 
             <!-- Description -->
@@ -145,7 +188,7 @@
                 class="w-full text-white save-button"
                 @click="submitUpdate"
             >
-                {{ editMode ? "SAVE CHANGES" : "CREATE CLIENT" }}
+                {{ editMode ? "SAVE CHANGES" : "CREATE EVALUATION" }}
             </el-button>
         </template>
     </el-dialog>
@@ -156,18 +199,22 @@ import { ElNotification } from "element-plus";
 import axios from "axios";
 import "../../../../css/form.css";
 import filesUpload from "@/Components/Custom/filesUpload.vue";
-import reportIcon from "@/Icons/report.svg?url";
-import locationIcon from "@/Icons/location.svg?url";
+import bmrIcon from "@/Icons/bmr.svg?url";
+import waterDropIcon from "@/Icons/waterDrop.svg?url";
 import attachmentIcon from "@/Icons/attachment.svg?url";
-import emailIcon from "@/Icons/email.svg?url";
-import phoneIcon from "@/Icons/phone.svg?url";
-import nifIcon from "@/Icons/nif.svg?url";
-import birthDateIcon from "@/Icons/birthDate.svg?url";
+import bodyFatIcon from "@/Icons/bodyFat.svg?url";
+import boneIcon from "@/Icons/bone.svg?url";
+import muscleMassIcon from "@/Icons/muscleMass.svg?url";
+import calendarIcon from "@/Icons/calendar.svg?url";
+import clientIcon from "@/Icons/client.svg?url";
+import scaleIcon from "@/Icons/scale.svg?url";
 import rullerIcon from "@/Icons/ruller.svg?url";
+import visceralFatIcon from "@/Icons/visceralFat.svg?url";
+import reportIcon from "@/Icons/report.svg?url";
 
 // Define o nome do ficheiro
 defineOptions({
-    name: "ClientModal",
+    name: "evaluationModal",
 });
 
 // Define as props
@@ -175,6 +222,7 @@ const props = defineProps({
     visible: Boolean,
     row: Object,
     editMode: Boolean,
+    clientsList: Array,
 });
 
 //Define os emits
@@ -188,28 +236,18 @@ const isLoading = ref(false);
 const form = ref({
     id: "",
     name: "",
-    email: "",
-    phone_number: "",
-    address: "",
-    nif: "",
-    height: "",
-    birth_date: "",
     description: "",
+    date: "",
+    bmr: "",
+    weight: "",
+    imc: "",
+    muscle_mass: "",
+    bone_mass: "",
+    visceral_fat: "",
+    body_fat: "",
+    body_water: "",
     attachments: [],
 });
-
-// Como as rules nao sao reactivas/nao sao alteradas entao nao precisamos de criar com 'ref'
-const rules = {
-    name: [
-        { required: false, message: "Please input a Name", trigger: "blur" },
-        {
-            min: 1,
-            max: 50,
-            message: "Length should be 1 to 100",
-            trigger: "blur",
-        },
-    ],
-};
 
 const openModal = () => {
     // Ao abrir o modal se estou em modo de edicao e tenho os dados preencho o formulario.
@@ -261,13 +299,19 @@ const submitUpdate = async () => {
             // Form Fields
             formData.append("id", form.value.id);
             formData.append("name", form.value.name);
-            formData.append("email", form.value.email || "");
-            formData.append("phone_number", form.value.phone_number || "");
-            formData.append("address", form.value.address || "");
-            formData.append("nif", form.value.nif || "");
-            formData.append("height", form.value.height || "");
-            formData.append("birth_date", form.value.birth_date || "");
+            formData.append("date", form.value.date || "");
+            formData.append("bmr", form.value.bmr || "");
+            formData.append("weight", form.value.weight || "");
+            formData.append("imc", form.value.imc || "");
+            formData.append("muscle_mass", form.value.muscle_mass || "");
+            formData.append("bone_mass", form.value.bone_mass || "");
+            formData.append("visceral_fat", form.value.visceral_fat || "");
+            formData.append("body_fat", form.value.body_fat || "");
+            formData.append("body_water", form.value.body_water || "");
             formData.append("description", form.value.description || "");
+
+            //Necessario verificar o null e undefined neste caso porque o formData tende a enviar como string em vez de null e entra em conflito no back end
+            appendIfDefined("client_id", form.value.client_id);
 
             // Tratamento dos anexos
             let files = filesUploadRef.value.filesUploaded;
@@ -308,8 +352,8 @@ const submitUpdate = async () => {
             }
 
             const url = props.editMode
-                ? `/api/clients/${props.row.id}` // URL para editar um provider
-                : "/api/clients"; // URL para criar um provider
+                ? `/api/evaluations/${props.row.id}` // URL para editar um provider
+                : "/api/evaluations"; // URL para criar um provider
 
             // Pedido API
             const response = await axios.post(url, formData);
@@ -342,13 +386,17 @@ const resetForm = () => {
         form.value.id = "";
     }
     form.value.name = "";
-    form.value.email = "";
-    form.value.phone_number = "";
-    form.value.address = "";
-    form.value.nif = "";
-    form.value.height = "";
-    form.value.birth_date = "";
     form.value.description = "";
+    form.value.date = "";
+    form.value.bmr = "";
+    form.value.weight = "";
+    form.value.imc = "";
+    form.value.muscle_mass = "";
+    form.value.bone_mass = "";
+    form.value.visceral_fat = "";
+    form.value.body_fat = "";
+    form.value.body_water = "";
+    form.value.client_id = "";
     form.value.attachments = [];
     isLoading.value = false;
 };

@@ -87,6 +87,7 @@ class ClientController extends Controller
             'address' => 'nullable|string',
             'nif' => 'nullable|string',
             'birth_date' => 'nullable|date',
+            'height' => 'nullable|integer',
             'description' => 'nullable|string',
         ]);
 
@@ -116,6 +117,7 @@ class ClientController extends Controller
         $client->description = $validated['description'];
         $client->address = $validated['address'];
         $client->nif = $validated['nif'];
+        $client->height = $validated['height'];
         $client->birth_date = $validated['birth_date'];
         $client->created_by = $user->id;
         $client->updated_by = $user->id;
@@ -145,6 +147,7 @@ class ClientController extends Controller
             'address' => 'nullable|string',
             'nif' => 'nullable|string',
             'birth_date' => 'nullable|date',
+            'height' => 'nullable|integer',
             'description' => 'nullable|string',
         ]);
 
@@ -210,6 +213,7 @@ class ClientController extends Controller
         $client->phone_number = $validated['phone_number'];
         $client->address = $validated['address'];
         $client->nif = $validated['nif'];
+        $client->height = $validated['height'];
         $client->birth_date = $validated['birth_date'];
         $client->description = $validated['description'];
         $client->updated_by = $user->id;
@@ -270,6 +274,7 @@ class ClientController extends Controller
             'phone_number' => $client->phone_number,
             'address' => $client->address,
             'nif' => $client->nif,
+            'height' => $client->height,
             'birth_date' => $client->birth_date,
             'description' => $client->description,
             'attachments' => $attachments,

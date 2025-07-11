@@ -33,22 +33,31 @@ class EvaluationController extends Controller
 
             // Filtros
             $clientFilter = $request['clientFilter']; // array
-            $searchFilter = $request['searchFilter'];     // string
+            $dateFilter = $request->input('dateFilter');
             $pageSize = $request['pageSize'];
+            $sortBy = $request->input('sortBy', 'date'); // default 'date'
+            $sortOrder = $request->input('sortOrder', 'desc'); // default' desc'
 
             if (!empty($clientFilter) && is_array($clientFilter)) {
                 $query->whereIn('client_id', $clientFilter);
             }
 
-            if (!empty($searchFilter)) {
-                $query->where(function ($q) use ($searchFilter) {
-                    $q->orWhereHas('client', function ($q2) use ($searchFilter) {
-                        $q2->where('name', 'like', '%' . $searchFilter . '%');
-                    });
-                });
+            if (is_array($dateFilter) && count($dateFilter) === 2) {
+                $start = $dateFilter[0];
+                $end = $dateFilter[1];
+                $query->whereBetween('date', [$start, $end]);
             }
-            //Ordenar pelo nome
-            $query->orderBy('date', 'desc');
+
+            // Validação segura do sortBy e sortOrder
+            $allowedSortFields = ['date'];
+            $allowedSortOrder = ['asc', 'desc'];
+
+            if (in_array($sortBy, $allowedSortFields) && in_array($sortOrder, $allowedSortOrder)) {
+                $query->orderBy($sortBy, $sortOrder);
+            } else {
+                // Default sort
+                $query->orderBy('date', 'desc');
+            }
 
             // Retorna paginado ou todas as entradas
             if (is_numeric($pageSize)) {
@@ -88,10 +97,8 @@ class EvaluationController extends Controller
 
         // Se tiver permissao valido os dados e prossigo.
         $validated = $request->validate([
-            'name' => 'required|string|max:100',
             'description' => 'nullable|string',
-            'date' => 'nullable|date',
-            'height' => 'nullable|integer',
+            'date' => 'required|date',
             'bmr' => 'nullable|integer',
             'weight' => 'nullable|numeric',
             'imc' => 'nullable|numeric',
@@ -100,8 +107,7 @@ class EvaluationController extends Controller
             'visceral_fat' => 'nullable|integer',
             'body_fat' => 'nullable|numeric',
             'body_water' => 'nullable|numeric',
-            'operation_days' => 'nullable|string',
-            'client_id' => 'nullable|exists:clients,id',
+            'client_id' => 'required|exists:clients,id',
         ]);
 
         // Na criação de uma Avaliacao apenas me limito a associar os novos ficheiros e guardar no servidor.
@@ -123,10 +129,8 @@ class EvaluationController extends Controller
         }
 
         $evaluation = new Evaluation();
-        $evaluation->name = $validated['name'];
         $evaluation->date = $validated['date'] ?? null;
         $evaluation->weight = $validated['weight'] ?? null;
-        $evaluation->height = $validated['height'] ?? null;
         $evaluation->imc = $validated['imc'] ?? null;
         $evaluation->muscle_mass = $validated['muscle_mass'] ?? null;
         $evaluation->bone_mass = $validated['bone_mass'] ?? null;
@@ -159,10 +163,8 @@ class EvaluationController extends Controller
 
         // Se tiver permissao valido os dados e prossigo.
         $validated = $request->validate([
-            'name' => 'required|string|max:100',
             'description' => 'nullable|string',
-            'date' => 'nullable|date',
-            'height' => 'nullable|integer',
+            'date' => 'required|date',
             'bmr' => 'nullable|integer',
             'weight' => 'nullable|numeric',
             'imc' => 'nullable|numeric',
@@ -171,8 +173,7 @@ class EvaluationController extends Controller
             'visceral_fat' => 'nullable|integer',
             'body_fat' => 'nullable|numeric',
             'body_water' => 'nullable|numeric',
-            'operation_days' => 'nullable|string',
-            'client_id' => 'nullable|exists:clients,id',
+            'client_id' => 'required|exists:clients,id',
         ]);
 
         //Ficheiros
@@ -233,10 +234,8 @@ class EvaluationController extends Controller
 
         // Atualizo a Avaliaçao
         $evaluation = Evaluation::find($request->id);
-        $evaluation->name = $validated['name'];
         $evaluation->date = $validated['date'] ?? null;
         $evaluation->weight = $validated['weight'] ?? null;
-        $evaluation->height = $validated['height'] ?? null;
         $evaluation->imc = $validated['imc'] ?? null;
         $evaluation->muscle_mass = $validated['muscle_mass'] ?? null;
         $evaluation->bone_mass = $validated['bone_mass'] ?? null;
@@ -303,7 +302,6 @@ class EvaluationController extends Controller
             'client_id' => $evaluation->client_id,
             'date' => $evaluation->date,
             'weight' => $evaluation->weight,
-            'height' => $evaluation->height,
             'imc' => $evaluation->imc,
             'muscle_mass' => $evaluation->muscle_mass,
             'bone_mass' => $evaluation->bone_mass,
@@ -312,6 +310,7 @@ class EvaluationController extends Controller
             'body_fat' => $evaluation->body_fat,
             'body_water' => $evaluation->body_water,
             'description' => $evaluation->description,
+            'client' => $evaluation->client,
             'attachments' => $attachments,
             'can_edit' => $user_can_edit,
             'can_delete' => $user_can_delete,

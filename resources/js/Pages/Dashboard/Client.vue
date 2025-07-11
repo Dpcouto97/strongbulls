@@ -151,7 +151,8 @@ const totalItems = ref(0);
 const can_create = ref(false); //Permissao Add
 
 //Variaveis Nao Reactivas nao precisam de 'ref', pois nao sao alteradas.
-const tableColumns = [{ label: "Name", property: "name", minWidth: 100, icon: "person" }];
+const tableColumns = [{ label: "Name", property: "name", minWidth: 350, icon: "person" },
+    { label: "Phone", property: "phone_number", minWidth: 100, icon: "call" }];
 
 // Acesso a toda a informacao da pagina, especialmente o utilizador logado
 const pageInfo = usePage();

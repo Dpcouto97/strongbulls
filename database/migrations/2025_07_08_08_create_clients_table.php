@@ -19,6 +19,7 @@ return new class extends Migration
             $table->text('address')->nullable();
             $table->text('nif')->nullable();
             $table->date('birth_date')->nullable();
+            $table->integer('height')->nullable();     // Altura
             $table->text('description')->nullable();
             $table->text('attachments')->nullable();
             $table->timestamps();
