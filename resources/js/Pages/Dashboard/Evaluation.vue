@@ -450,17 +450,6 @@ const onRemoteOperation = (val) => {
     gap: 0.2rem;
 }
 
-.right-filter-container {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.filter-text {
-    text-decoration: underline;
-    color: #000;
-}
-
 .title-container {
     display: flex;
     align-items: center;
