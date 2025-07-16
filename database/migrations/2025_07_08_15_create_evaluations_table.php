@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('evaluations', function (Blueprint $table) {
             $table->id();
             $table->foreignId('client_id')->nullable()->constrained();      // Cliente
-            $table->date('date')->nullable();                               // Data
+            $table->dateTime('date')->nullable();                           // Data e hora
             $table->integer('bmr')->nullable();                             // Numero minimo de calorias necessarias
             $table->integer('visceral_fat')->nullable();                    // Gordura Visceral
             $table->decimal('weight', 8, 2)->nullable();        // PESO

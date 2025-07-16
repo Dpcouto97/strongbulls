@@ -15,13 +15,46 @@
             </div>
         </template>
 
+      <!-- Data da avaliacao -->
+      <div class="date-container">
+        <div class="date-display">{{ formatDateTime(data.date) }}</div>
+      </div>
+
+        <!-- Ultima Avaliacao Comparacao -->
+        <div class="last-evaluation-container" v-if="data.last_evaluation_compare">
+            <div class="last-date-container">
+                {{ "Since " + formatDateTime(data.last_evaluation_compare?.date) }}
+            </div>
+            <div class="compare-values-container">
+                <div class="compare-box" v-if="data.weight">
+                    <span class="value">{{ getDifference(data.weight, data.last_evaluation_compare.weight) }}</span>
+                    <span class="unit">kg</span>
+                    <div class="label">Weight</div>
+                </div>
+                <div class="compare-box" v-if="data.imc">
+                    <span class="value">{{ getDifference(data.imc, data.last_evaluation_compare.imc) }}</span>
+                    <div class="label">IMC</div>
+                </div>
+                <div class="compare-box" v-if="data.body_fat">
+                    <span class="value">{{ getDifference(data.body_fat, data.last_evaluation_compare.body_fat) }}</span>
+                    <span class="unit">%</span>
+                    <div class="label">Body Fat</div>
+                </div>
+              <div class="compare-box" v-if="data.muscle_mass">
+                <span class="value">{{ getDifference(data.muscle_mass, data.last_evaluation_compare.muscle_mass) }}</span>
+                <span class="unit">kg</span>
+                <div class="label">Muscle Mass</div>
+              </div>
+            </div>
+        </div>
+
         <el-collapse v-model="activeCards">
             <el-collapse-item v-if="data.weight" title="Weight" name="1">
                 <template #title>
                     <div class="custom-title">
                         <span class="material-symbols-outlined">scale</span>
                         <span class="title-text">Weight</span>
-                        <span class="info-badge" :style="{ color: currentWeightColor}">
+                        <span class="info-badge" :style="{ color: currentWeightColor }">
                             {{ data.weight + " Kg" }}
                         </span>
                     </div>
@@ -40,14 +73,11 @@
                         <span class="material-symbols-outlined">straighten</span>
                         <span class="title-text">IMC</span>
                         <span class="info-badge" :style="{ color: imcValueColor }">
-                            {{ data.imc}}
+                            {{ data.imc }}
                         </span>
                     </div>
                 </template>
-                <health-indicator-bar
-                    :value="data.imc"
-                    :ranges="imcRanges"
-                />
+                <health-indicator-bar :value="data.imc" :ranges="imcRanges" />
             </el-collapse-item>
             <el-collapse-item v-if="data.body_fat" title="Body Fat" name="3">
                 <template #title>
@@ -55,15 +85,11 @@
                         <span class="material-symbols-outlined">body_fat</span>
                         <span class="title-text">Body Fat</span>
                         <span class="info-badge" :style="{ color: bodyFatValueColor }">
-                            {{ data.body_fat + "%"}}
+                            {{ data.body_fat + "%" }}
                         </span>
                     </div>
                 </template>
-                <health-indicator-bar
-                    :value="data.body_fat"
-                    unit="%"
-                    :ranges="bodyFatRanges"
-                />
+                <health-indicator-bar :value="data.body_fat" unit="%" :ranges="bodyFatRanges" />
             </el-collapse-item>
             <el-collapse-item v-if="data.visceral_fat" title="Visceral Fat" name="4">
                 <template #title>
@@ -75,10 +101,7 @@
                         </span>
                     </div>
                 </template>
-                <health-indicator-bar
-                    :value="data.visceral_fat"
-                    :ranges="visceralRanges"
-                />
+                <health-indicator-bar :value="data.visceral_fat" :ranges="visceralRanges" />
             </el-collapse-item>
             <el-collapse-item v-if="data.body_water" title="Body Water" name="5">
                 <template #title>
@@ -86,15 +109,11 @@
                         <span class="material-symbols-outlined">humidity_high</span>
                         <span class="title-text">Body Water</span>
                         <span class="info-badge" :style="{ color: waterValueColor }">
-                            {{ data.body_water + "%"}}
+                            {{ data.body_water + "%" }}
                         </span>
                     </div>
                 </template>
-                <health-indicator-bar
-                    :value="data.body_water"
-                    unit="%"
-                    :ranges="waterRanges"
-                />
+                <health-indicator-bar :value="data.body_water" unit="%" :ranges="waterRanges" />
             </el-collapse-item>
             <el-collapse-item v-if="data.muscle_mass" title="Muscle Mass" name="6">
                 <template #title>
@@ -102,15 +121,11 @@
                         <span class="material-symbols-outlined">exercise</span>
                         <span class="title-text">Muscle Mass</span>
                         <span class="info-badge" :style="{ color: muscleMassColor }">
-                            {{ data.muscle_mass + "Kg"}}
+                            {{ data.muscle_mass + "Kg" }}
                         </span>
                     </div>
                 </template>
-                <health-indicator-bar
-                    :value="data.muscle_mass"
-                    unit="Kg"
-                    :ranges="muscleMassRanges"
-                />
+                <health-indicator-bar :value="data.muscle_mass" unit="Kg" :ranges="muscleMassRanges" />
             </el-collapse-item>
             <el-collapse-item v-if="data.bone_mass" title="Body Water" name="7">
                 <template #title>
@@ -118,15 +133,38 @@
                         <span class="material-symbols-outlined">pet_supplies</span>
                         <span class="title-text">Bone Mass</span>
                         <span class="info-badge" :style="{ color: boneMassColor }">
-                            {{ data.bone_mass + "Kg"}}
+                            {{ data.bone_mass + "Kg" }}
                         </span>
                     </div>
                 </template>
-                <health-indicator-bar
-                    :value="data.bone_mass"
-                    unit="Kg"
-                    :ranges="boneMassRanges"
-                />
+                <health-indicator-bar :value="data.bone_mass" unit="Kg" :ranges="boneMassRanges" />
+            </el-collapse-item>
+            <el-collapse-item v-if="data.description" title="Description" name="8">
+                <template #title>
+                    <div class="custom-title">
+                        <span class="material-symbols-outlined">article</span>
+                        <span class="title-text">Description</span>
+                    </div>
+                </template>
+                {{ data.description }}
+            </el-collapse-item>
+            <el-collapse-item v-if="data.attachments.length > 0" title="Attachments" name="9">
+                <template #title>
+                    <div class="custom-title">
+                        <span class="material-symbols-outlined">attach_file</span>
+                        <span class="title-text">Attachments</span>
+                    </div>
+                </template>
+                <div v-if="data.attachments?.length">
+                    <div
+                        v-for="(file, index) in data.attachments"
+                        :key="index"
+                        class="underline cursor-pointer"
+                        @click="downloadAttachment(file)"
+                    >
+                        {{ file.name }}
+                    </div>
+                </div>
             </el-collapse-item>
         </el-collapse>
     </el-dialog>
@@ -285,20 +323,31 @@ const boneMassRanges = computed(() => {
     return generateBoneMassRanges(height.value);
 });
 
-const muscleMassColor = computed(() =>
-    getValueColor(props.data.muscle_mass, muscleMassRanges.value)
-);
+const muscleMassColor = computed(() => getValueColor(props.data.muscle_mass, muscleMassRanges.value));
 
-const boneMassColor = computed(() =>
-    getValueColor(props.data.bone_mass, boneMassRanges.value)
-);
+const boneMassColor = computed(() => getValueColor(props.data.bone_mass, boneMassRanges.value));
 
 const imcValueColor = computed(() => getValueColor(props.data.imc, imcRanges));
 const waterValueColor = computed(() => getValueColor(props.data.body_water, waterRanges));
 const visceralValueColor = computed(() => getValueColor(props.data.visceral_fat, visceralRanges));
 const bodyFatValueColor = computed(() => getValueColor(props.data.body_fat, bodyFatRanges));
 
+const formatDateTime = (rawDate) => {
+   // Devolve a data com o formato : July 7, 2025 10:50 AM
+    if (!rawDate) return "";
+    const date = new Date(rawDate);
+    return date.toLocaleString("en-US", {
+        month: "long",
+        day: "numeric",
+        year: "numeric",
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true,
+    });
+};
+
 const getValueColor = (value, array) => {
+    // Retorna a cor
     if (!value || !array.length) return "#ccc";
 
     for (const range of array) {
@@ -316,7 +365,6 @@ const openModal = () => {
         if (dialogBody) {
             dialogBody.scrollTop = 0;
         }
-    console.log('data',props.data);
         // Atribuo os valores da altura e peso do cliente dessa mesma avaliacao
         height.value = props.data?.client?.height / 100;
         weight.value = props.data?.weight;
@@ -378,7 +426,7 @@ const generateMuscleMassRanges = (heightMeters) => {
 };
 
 const generateBoneMassRanges = (heightMeters) => {
-    const base = 22 * (heightMeters ** 2)
+    const base = 22 * heightMeters ** 2;
 
     return [
         {
@@ -399,7 +447,13 @@ const generateBoneMassRanges = (heightMeters) => {
     ];
 };
 
-
+const getDifference = (newValue, oldValue) => {
+    if (newValue == null || oldValue == null || isNaN(newValue) || isNaN(oldValue)) return "";
+    const diff = parseFloat((newValue - oldValue).toFixed(2));
+    if (diff > 0) return `+${diff}`;
+    if (diff < 0) return `${diff}`; // already negative
+    return "0";
+};
 
 const downloadAttachment = (file) => {
     // Download do ficheiro
@@ -438,4 +492,66 @@ const downloadAttachment = (file) => {
     padding: 2px 10px;
     border-radius: 10px;
 }
+
+/* Remove border azul estranha no input das datas */
+.el-date-editor .el-range-input {
+    box-shadow: none !important;
+    border-color: transparent !important;
+}
+
+/* Css para mostrar barra cinzenta com data atual */
+.date-container .date-display {
+    width: 100%;
+    background-color: #f3f4f6; /* Tailwind gray-100 */
+    color: #374151; /* Tailwind gray-700 */
+    padding: 10px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 6px;
+    margin-bottom: 15px;
+}
+
+.last-evaluation-container {
+  background-color: #fff;
+  padding: 5px;
+  border-radius: 10px;
+  margin-bottom: 25px;
+  font-family: sans-serif;
+}
+
+.last-date-container {
+  font-size: 13px;
+  color: #9ca3af;
+  margin-bottom: 10px;
+}
+
+/* Css para mostrar comparacao de valores e data da ultima avaliacao */
+.compare-values-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  text-align: center;
+}
+
+.compare-box {
+  flex: 1;
+}
+
+.compare-box .value {
+  font-weight: 600;
+  font-size: 20px;
+  color: #111827; /* Tailwind gray-900 */
+}
+
+.compare-box .unit {
+  font-size: 12px;
+  margin-left: 2px;
+  color: #6b7280; /* Tailwind gray-500 */
+}
+
+.compare-box .label {
+  font-size: 13px;
+  color: #6b7280;
+}
+
 </style>

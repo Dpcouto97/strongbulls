@@ -100,7 +100,7 @@ class EvaluationController extends Controller
             'description' => 'nullable|string',
             'date' => 'required|date',
             'bmr' => 'nullable|integer',
-            'weight' => 'nullable|numeric',
+            'weight' => 'required|numeric',
             'imc' => 'nullable|numeric',
             'muscle_mass' => 'nullable|numeric',
             'bone_mass' => 'nullable|numeric',
@@ -166,7 +166,7 @@ class EvaluationController extends Controller
             'description' => 'nullable|string',
             'date' => 'required|date',
             'bmr' => 'nullable|integer',
-            'weight' => 'nullable|numeric',
+            'weight' => 'required|numeric',
             'imc' => 'nullable|numeric',
             'muscle_mass' => 'nullable|numeric',
             'bone_mass' => 'nullable|numeric',
@@ -297,6 +297,26 @@ class EvaluationController extends Controller
                 ];
             })->toArray();
 
+        // Buscar última avaliação anterior para o mesmo cliente
+        $previousEvaluation = Evaluation::where('client_id', $evaluation->client_id)
+            ->where('date', '<', $evaluation->date)
+            ->orderBy('date', 'desc')
+            ->first();
+
+        // Transformar se existir
+        $lastEvaluationCompare = null;
+        if ($previousEvaluation) {
+            $lastEvaluationCompare = [
+                'id' => $previousEvaluation->id,
+                'date' => $previousEvaluation->date,
+                'weight' => $previousEvaluation->weight,
+                'imc' => $previousEvaluation->imc,
+                'muscle_mass' => $previousEvaluation->muscle_mass,
+                'body_fat' => $previousEvaluation->body_fat,
+                'body_water' => $previousEvaluation->body_water,
+            ];
+        }
+
         return [
             'id' => $evaluation->id,
             'client_id' => $evaluation->client_id,
@@ -311,6 +331,7 @@ class EvaluationController extends Controller
             'body_water' => $evaluation->body_water,
             'description' => $evaluation->description,
             'client' => $evaluation->client,
+            'last_evaluation_compare' => $lastEvaluationCompare,
             'attachments' => $attachments,
             'can_edit' => $user_can_edit,
             'can_delete' => $user_can_delete,

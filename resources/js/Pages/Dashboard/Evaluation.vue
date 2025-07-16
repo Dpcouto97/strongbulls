@@ -12,19 +12,18 @@
                         <div class="left-filter-container">
                             <span class="material-symbols-outlined" style="font-size:25px;">manage_search</span>
                             <div class="filter-controls flex-1">
-                                <!-- Date Range Filter -->
+                                <!-- DateTime Range Filter -->
                                 <el-date-picker
-                                    clas="date-filter"
                                     v-model="dateFilter"
-                                    type="daterange"
+                                    type="datetimerange"
                                     unlink-panels
                                     range-separator="To"
-                                    start-placeholder="Start date"
-                                    end-placeholder="End date"
+                                    start-placeholder="Start"
+                                    end-placeholder="End"
                                     :shortcuts="shortcuts"
                                     size="default"
-                                    format="DD-MM-YYYY"
-                                    value-format="YYYY-MM-DD"
+                                    format="DD-MM-YYYY HH:mm"
+                                    value-format="YYYY-MM-DD HH:mm:ss"
                                     @change="getTableData"
                                 />
 
@@ -66,7 +65,6 @@
                                 :align="col.align"
                                 :formatter="col.formatter"
                                 :sortable="col.sortable"
-                                class-name="left-gap"
                             >
                                 <template #header="{ column }">
                                     <span class="flex items-center gap-2">
@@ -76,7 +74,7 @@
                                 </template>
                             </el-table-column>
                             <!-- Colunas para botoes de acao ( add/edit/delete) -->
-                            <el-table-column align="right" width="140" class-name="left-gap">
+                            <el-table-column align="right" width="140">
                                 <template #header>
                                     <div v-if="can_create" class="flex items-center justify-left">
                                         <button
@@ -259,7 +257,7 @@ const tableColumns = [
     {
         label: "Date",
         property: "date",
-        formatter: (row) => moment(row.date).format("DD-MM-YYYY"),
+        formatter: (row) => moment(row.date).format("DD-MM-YYYY HH:mm"),
         icon: "calendar_today",
         sortable: true,
     },
@@ -272,7 +270,7 @@ const tableColumns = [
     {
         label: "Weight",
         property: "weight",
-        formatter: (row) => (row.weight ? row.weight + " kg" : " - "),
+        formatter: (row) => (row.weight ? row.weight + " kg" : " "),
         icon: "scale",
     },
     {
@@ -283,13 +281,13 @@ const tableColumns = [
     {
         label: "Body Fat",
         property: "body_fat",
-        formatter: (row) => (row.body_fat ? row.body_fat + " %" : " - "),
+        formatter: (row) => (row.body_fat ? row.body_fat + " %" : " "),
         icon: "body_fat",
     },
     {
         label: "Muscle Mass",
         property: "muscle_mass",
-        formatter: (row) => (row.muscle_mass ? row.muscle_mass + " kg" : " - "),
+        formatter: (row) => (row.muscle_mass ? row.muscle_mass + " kg" : " "),
         icon: "exercise",
     },
 ];

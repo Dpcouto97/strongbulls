@@ -70,8 +70,13 @@
 }
 
 /* Css para retirar borda dos inputs do formulario */
-.el-input__wrapper, .el-input__inner, .el-input-tag__input, .el-input-tag__wrapper, .el-textarea__inner {
+/*.el-input__wrapper, .el-input__inner, .el-input-tag__input, .el-input-tag__wrapper, .el-textarea__inner {
     background-color: #F2F2F2 !important;
     border-radius: 4px;
+    box-shadow: none !important;
+}*/
+
+.el-input__inner {
+    outline: none !important;
     box-shadow: none !important;
 }

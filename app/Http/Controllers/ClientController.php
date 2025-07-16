@@ -36,13 +36,23 @@ class ClientController extends Controller
             // Filtros
             $searchFilter = $request['searchFilter'];
             $pageSize = $request['pageSize'];
+            $sortBy = $request->input('sortBy', 'name'); // default 'date'
+            $sortOrder = $request->input('sortOrder', 'asc'); // default' desc'
 
             if (!empty($searchFilter)) {
                 $query->where('name', 'like', '%' . $searchFilter . '%');
             }
 
-            //Ordenar pelo nome
-            $query->orderBy('name');
+            // Validação segura do sortBy e sortOrder
+            $allowedSortFields = ['name'];
+            $allowedSortOrder = ['asc', 'desc'];
+
+            if (in_array($sortBy, $allowedSortFields) && in_array($sortOrder, $allowedSortOrder)) {
+                $query->orderBy($sortBy, $sortOrder);
+            } else {
+                // Default sort
+                $query->orderBy('name', 'asc');
+            }
 
             // Retorna paginado ou todas as entradas
             if (is_numeric($pageSize)) {

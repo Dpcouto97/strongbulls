@@ -22,7 +22,14 @@
                         <span>Date</span>
                     </div>
                 </template>
-                <el-date-picker v-model="form.date" type="date" placeholder="Pick a date" value-format="YYYY-MM-DD" />
+                <el-date-picker
+                    v-model="form.date"
+                    type="datetime"
+                    placeholder="Pick date and time"
+                    format="DD-MM-YYYY HH:mm"
+                    value-format="YYYY-MM-DD HH:mm:ss"
+                />
+
             </el-form-item>
 
             <!-- Cliente -->
@@ -211,6 +218,7 @@ import scaleIcon from "@/Icons/scale.svg?url";
 import rullerIcon from "@/Icons/ruller.svg?url";
 import visceralFatIcon from "@/Icons/visceralFat.svg?url";
 import reportIcon from "@/Icons/report.svg?url";
+import moment from "moment";
 
 // Define o nome do ficheiro
 defineOptions({
@@ -253,6 +261,9 @@ const openModal = () => {
     // Ao abrir o modal se estou em modo de edicao e tenho os dados preencho o formulario.
     if (props.editMode && props.row) {
         Object.assign(form.value, props.row);
+    }else {
+        // Se estiver em modo de criacao preenchemos a data automaticamente com o dia e hora atual
+        form.value.date = moment().format("YYYY-MM-DD HH:mm:ss")
     }
 
     nextTick(() => {

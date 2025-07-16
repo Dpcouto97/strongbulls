@@ -39,7 +39,7 @@
 import { computed } from "vue";
 
 const props = defineProps({
-    value: { type: Number, required: true },
+    value: { type: String, required: true },
     unit: { type: String, default: "" },
     ranges: { type: Array, required: true },
     minValue: { type: Number, default: null },
