@@ -157,9 +157,6 @@ const sortOrder = ref(null);
 const tableColumns = [{ label: "Name", property: "name", minWidth: 350, icon: "person",sortable: true, },
     { label: "Phone", property: "phone_number", minWidth: 100, icon: "call" }];
 
-// Acesso a toda a informacao da pagina, especialmente o utilizador logado
-const pageInfo = usePage();
-
 // Metodos
 const getTableData = async () => {
     //Busca a lista de Items da tabela da BD.

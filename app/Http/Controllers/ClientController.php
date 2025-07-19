@@ -97,7 +97,7 @@ class ClientController extends Controller
             'address' => 'nullable|string',
             'nif' => 'nullable|string',
             'birth_date' => 'nullable|date',
-            'height' => 'nullable|integer',
+            'height' => 'required|integer',
             'description' => 'nullable|string',
         ]);
 
@@ -157,7 +157,7 @@ class ClientController extends Controller
             'address' => 'nullable|string',
             'nif' => 'nullable|string',
             'birth_date' => 'nullable|date',
-            'height' => 'nullable|integer',
+            'height' => 'required|integer',
             'description' => 'nullable|string',
         ]);
 

@@ -14,7 +14,7 @@
 
         <!--------------- FORMULARIO --------->
         <el-form :model="form" :rules="rules" ref="formRef" label-position="top" label-width="120px" class="space-y-5">
-            <!-- Provider Name -->
+            <!-- Client Name -->
             <el-form-item label="Client Name" prop="name">
                 <template #label>
                     <div class="flex items-center space-x-1">

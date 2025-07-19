@@ -17,7 +17,7 @@ class Plan extends Model
     //Clients ( N - N ) - 1 cliente pode estar associado a varios planos, 1 plano pode ter varios clientes associados.
     public function clients(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
-        return $this->belongsToMany(Plan::class, 'plan_client')->withTimestamps();
+        return $this->belongsToMany(Client::class, 'plan_client')->withTimestamps();
     }
 
     //Exercises ( Has many exercises )

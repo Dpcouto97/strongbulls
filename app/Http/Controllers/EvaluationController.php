@@ -271,7 +271,6 @@ class EvaluationController extends Controller
             return response()->json(['success' => false, 'message' => 'Evaluation not found'], 404);
         }
 
-
         // Elimino a avaliaçao
         $evaluation->delete();
         return response()->json(['success' => true, 'data' => $evaluation]);

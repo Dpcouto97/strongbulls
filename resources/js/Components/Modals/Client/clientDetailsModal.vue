@@ -74,7 +74,7 @@
             <!-- Description -->
             <div class="col-span-1 md:col-span-2">
                 <div class="label px-4 py-2 flex items-center gap-2">
-                    <img :src="locationIcon" alt="icon" class="w-4 h-4 filter brightness-0 invert" />
+                    <img :src="reportIcon" alt="icon" class="w-4 h-4 filter brightness-0 invert" />
                     <span>Description</span>
                 </div>
                 <div class="bg-gray-100 px-4 py-2">{{ data.description || "—" }}</div>
@@ -112,6 +112,7 @@ import phoneIcon from "@/Icons/phone.svg?url";
 import nifIcon from "@/Icons/nif.svg?url";
 import birthDateIcon from "@/Icons/birthDate.svg?url";
 import rullerIcon from "@/Icons/ruller.svg?url";
+import reportIcon from "@/Icons/report.svg?url";
 import { nextTick } from "vue";
 
 // Define o nome do ficheiro

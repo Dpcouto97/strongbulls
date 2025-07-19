@@ -15,10 +15,10 @@
             </div>
         </template>
 
-      <!-- Data da avaliacao -->
-      <div class="date-container">
-        <div class="date-display">{{ formatDateTime(data.date) }}</div>
-      </div>
+        <!-- Data da avaliacao -->
+        <div class="date-container">
+            <div class="date-display">{{ formatDateTime(data.date) }}</div>
+        </div>
 
         <!-- Ultima Avaliacao Comparacao -->
         <div class="last-evaluation-container" v-if="data.last_evaluation_compare">
@@ -40,11 +40,13 @@
                     <span class="unit">%</span>
                     <div class="label">Body Fat</div>
                 </div>
-              <div class="compare-box" v-if="data.muscle_mass">
-                <span class="value">{{ getDifference(data.muscle_mass, data.last_evaluation_compare.muscle_mass) }}</span>
-                <span class="unit">kg</span>
-                <div class="label">Muscle Mass</div>
-              </div>
+                <div class="compare-box" v-if="data.muscle_mass">
+                    <span class="value">
+                        {{ getDifference(data.muscle_mass, data.last_evaluation_compare.muscle_mass) }}
+                    </span>
+                    <span class="unit">kg</span>
+                    <div class="label">Muscle Mass</div>
+                </div>
             </div>
         </div>
 
@@ -333,7 +335,7 @@ const visceralValueColor = computed(() => getValueColor(props.data.visceral_fat,
 const bodyFatValueColor = computed(() => getValueColor(props.data.body_fat, bodyFatRanges));
 
 const formatDateTime = (rawDate) => {
-   // Devolve a data com o formato : July 7, 2025 10:50 AM
+    // Devolve a data com o formato : July 7, 2025 10:50 AM
     if (!rawDate) return "";
     const date = new Date(rawDate);
     return date.toLocaleString("en-US", {
@@ -512,46 +514,47 @@ const downloadAttachment = (file) => {
 }
 
 .last-evaluation-container {
-  background-color: #fff;
-  padding: 5px;
-  border-radius: 10px;
-  margin-bottom: 25px;
-  font-family: sans-serif;
+    background-color: #fff;
+    padding: 5px;
+    border-radius: 10px;
+    margin-bottom: 25px;
+    font-family: sans-serif;
 }
 
 .last-date-container {
-  font-size: 13px;
-  color: #9ca3af;
-  margin-bottom: 10px;
+    font-size: 13px;
+    color: #9ca3af;
+    margin-bottom: 10px;
 }
 
 /* Css para mostrar comparacao de valores e data da ultima avaliacao */
 .compare-values-container {
-  display: flex;
-  justify-content: space-between;
-  gap: 16px;
-  text-align: center;
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    text-align: center;
 }
 
 .compare-box {
-  flex: 1;
+    flex: 1;
 }
 
 .compare-box .value {
-  font-weight: 600;
-  font-size: 20px;
-  color: #111827; /* Tailwind gray-900 */
+    font-weight: 600;
+    font-size: 20px;
+    color: #111827; /* Tailwind gray-900 */
 }
 
 .compare-box .unit {
-  font-size: 12px;
-  margin-left: 2px;
-  color: #6b7280; /* Tailwind gray-500 */
+    font-size: 12px;
+    margin-left: 2px;
+    color: #6b7280; /* Tailwind gray-500 */
 }
 
 .compare-box .label {
-  font-size: 13px;
-  color: #6b7280;
+    font-size: 12px;
+    font-weight:300;
+    color: #6b7280;
+    background-color:transparent !important;
 }
-
 </style>

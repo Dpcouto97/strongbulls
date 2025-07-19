@@ -4,6 +4,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EvaluationController;
+use App\Http\Controllers\PlanController;
 use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\CategoryController;
@@ -31,12 +32,12 @@ Route::middleware(['auth:sanctum'])->prefix('evaluations')->group(function () {
     Route::delete('/{id}', [EvaluationController::class, 'deleteEvaluation']);
 });
 
-// Providers
-Route::middleware(['auth:sanctum'])->prefix('providers')->group(function () {
-    Route::get('/', [ProviderController::class, 'listProviders']);
-    Route::post('/', [ProviderController::class, 'insertProvider']);
-    Route::put('/{id}', [ProviderController::class, 'updateProvider']);
-    Route::delete('/{id}', [ProviderController::class, 'deleteProvider']);
+// Plans
+Route::middleware(['auth:sanctum'])->prefix('plans')->group(function () {
+    Route::get('/', [PlanController::class, 'listPlans']);
+    Route::post('/', [PlanController::class, 'insertPlan']);
+    Route::put('/{id}', [PlanController::class, 'updatePlan']);
+    Route::delete('/{id}', [PlanController::class, 'deletePlan']);
 });
 
 

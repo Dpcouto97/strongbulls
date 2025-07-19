@@ -100,7 +100,7 @@ const logout = () => {
                                         <DropdownLink v-if="canAccess('evaluation', 'list')" :href="route('evaluations')" :active="route().current('evaluations')">
                                             Avaliações
                                         </DropdownLink>
-                                        <DropdownLink v-if="canAccess('plan', 'list')" :href="route('providers')" :active="route().current('providers')">
+                                        <DropdownLink v-if="canAccess('plan', 'list')" :href="route('plans')" :active="route().current('plans')">
                                             Planos
                                         </DropdownLink>
                                         <DropdownLink v-if="canAccess('exercise', 'list')" :href="route('clients')" :active="route().current('clients')">

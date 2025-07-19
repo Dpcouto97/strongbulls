@@ -29,7 +29,6 @@
                     format="DD-MM-YYYY HH:mm"
                     value-format="YYYY-MM-DD HH:mm:ss"
                 />
-
             </el-form-item>
 
             <!-- Cliente -->
@@ -261,9 +260,9 @@ const openModal = () => {
     // Ao abrir o modal se estou em modo de edicao e tenho os dados preencho o formulario.
     if (props.editMode && props.row) {
         Object.assign(form.value, props.row);
-    }else {
+    } else {
         // Se estiver em modo de criacao preenchemos a data automaticamente com o dia e hora atual
-        form.value.date = moment().format("YYYY-MM-DD HH:mm:ss")
+        form.value.date = moment().format("YYYY-MM-DD HH:mm:ss");
     }
 
     nextTick(() => {
