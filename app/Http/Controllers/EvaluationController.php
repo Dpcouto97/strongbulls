@@ -38,8 +38,8 @@ class EvaluationController extends Controller
             $sortBy = $request->input('sortBy', 'date'); // default 'date'
             $sortOrder = $request->input('sortOrder', 'desc'); // default' desc'
 
-            if (!empty($clientFilter) && is_array($clientFilter)) {
-                $query->whereIn('client_id', $clientFilter);
+            if (!empty($clientFilter)) {
+                $query->where('client_id', $clientFilter);
             }
 
             if (is_array($dateFilter) && count($dateFilter) === 2) {

@@ -24,7 +24,7 @@
                     </div>
                     <!-- Container TABELA/LISTA -->
                     <div class="table-container">
-                        <el-table :data="tableData" style="width: 100%" max-height="320" v-loading="isLoading" @sort-change="handleSortChange">
+                        <el-table :data="tableData" style="width: 100%" max-height="50vh" v-loading="isLoading" @sort-change="handleSortChange">
                             <el-table-column
                                 v-for="col in tableColumns"
                                 :key="col.property"

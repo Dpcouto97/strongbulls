@@ -48,7 +48,7 @@
                         <el-table
                             :data="tableData"
                             style="width: 100%"
-                            max-height="auto"
+                            max-height="50vh"
                             @sort-change="handleSortChange"
                             v-loading="isLoading"
                         >
@@ -156,7 +156,7 @@ import "../../../css/table.css";
 import "../../../css/notification.css";
 import AppLayout from "@/Layouts/AppLayout.vue";
 
-//Defne o nome dado ao ficheiro
+//Define o nome dado ao ficheiro
 defineOptions({
     name: "Plan",
 });
