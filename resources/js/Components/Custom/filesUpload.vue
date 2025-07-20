@@ -15,9 +15,9 @@
         >
             <div class="flex flex-row gap-2 items-center">
                 <div class="upload-container">
-                    <el-button>Choose Files</el-button>
+                    <el-button>{{ $t('choose_files') }}</el-button>
                 </div>
-                <div v-if="filesList.length < 1">No file choosen</div>
+                <div v-if="filesList.length < 1">{{ $t('no_file_choosen') }}</div>
             </div>
         </el-upload>
     </div>
@@ -78,17 +78,14 @@ const handleRemoveFile = (file, uploadFiles) => {
 
 const beforeRemove = (uploadFile, uploadFiles) => {
     // Confirmacao acerca da remocao de um ficheiro, para evitar remoção não intencional.
-    return ElMessageBox.confirm(
-        `Are you sure you want to delete<br><u>${uploadFile.name}</u>?`,
-        {
-            confirmButtonText: "Confirm",
-            cancelButtonText: "Cancel",
-            center: true,
-            buttonSize:'large',
-            customClass: "custom-confirm-box",
-            dangerouslyUseHTMLString: true,
-        }
-    );
+    return ElMessageBox.confirm(`Are you sure you want to delete<br><u>${uploadFile.name}</u>?`, {
+        confirmButtonText: "Confirm",
+        cancelButtonText: "Cancel",
+        center: true,
+        buttonSize: "large",
+        customClass: "custom-confirm-box",
+        dangerouslyUseHTMLString: true,
+    });
 };
 
 const handlePreview = (file) => {
