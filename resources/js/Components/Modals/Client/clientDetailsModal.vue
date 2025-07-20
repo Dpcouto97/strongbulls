@@ -11,19 +11,19 @@
         <template #header>
             <div class="flex items-center space-x-2 mb-4 mt-2">
                 <span class="material-symbols-outlined" style="font-size: 30px">info</span>
-                <h2 class="text-2xl font-semibold text-gray-800">Details</h2>
+                <h2 class="text-2xl font-semibold text-gray-800">{{ data.name }}</h2>
             </div>
         </template>
 
         <!---------- DETALHES ------>
         <div class="details-container grid grid-cols-2 md:grid-cols-2 gap-x-1 gap-y-3">
-            <!-- Client Name -->
+            <!-- Height -->
             <div>
                 <div class="label px-4 py-2 flex items-center gap-2">
-                    <img :src="userIcon" alt="icon" class="w-4 h-4 filter brightness-0 invert" />
-                    <span>Client Name</span>
+                    <img :src="rullerIcon" alt="icon" class="w-4 h-4 filter brightness-0 invert" />
+                    <span>Height</span>
                 </div>
-                <div class="bg-gray-100 px-4 py-2">{{ data.name || "—" }}</div>
+                <div class="bg-gray-100 px-4 py-2">{{ data.height + " cm" || "—" }}</div>
             </div>
 
             <!-- Email -->
@@ -74,7 +74,7 @@
             <!-- Description -->
             <div class="col-span-1 md:col-span-2">
                 <div class="label px-4 py-2 flex items-center gap-2">
-                    <img :src="locationIcon" alt="icon" class="w-4 h-4 filter brightness-0 invert" />
+                    <img :src="reportIcon" alt="icon" class="w-4 h-4 filter brightness-0 invert" />
                     <span>Description</span>
                 </div>
                 <div class="bg-gray-100 px-4 py-2">{{ data.description || "—" }}</div>
@@ -105,13 +105,14 @@
 </template>
 
 <script setup>
-import userIcon from "@/Icons/user.svg?url";
 import locationIcon from "@/Icons/location.svg?url";
 import attachmentIcon from "@/Icons/attachment.svg?url";
 import emailIcon from "@/Icons/email.svg?url";
 import phoneIcon from "@/Icons/phone.svg?url";
 import nifIcon from "@/Icons/nif.svg?url";
 import birthDateIcon from "@/Icons/birthDate.svg?url";
+import rullerIcon from "@/Icons/ruller.svg?url";
+import reportIcon from "@/Icons/report.svg?url";
 import { nextTick } from "vue";
 
 // Define o nome do ficheiro

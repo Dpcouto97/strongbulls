@@ -3,7 +3,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ProductController;
+use App\Http\Controllers\EvaluationController;
+use App\Http\Controllers\PlanController;
 use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\CategoryController;
@@ -15,22 +16,6 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-// Products
-Route::middleware(['auth:sanctum'])->prefix('products')->group(function () {
-    Route::get('/', [ProductController::class, 'listProducts']);
-    Route::post('/', [ProductController::class, 'insertProduct']);
-    Route::put('/{id}', [ProductController::class, 'updateProduct']);
-    Route::delete('/{id}', [ProductController::class, 'deleteProduct']);
-});
-
-// Providers
-Route::middleware(['auth:sanctum'])->prefix('providers')->group(function () {
-    Route::get('/', [ProviderController::class, 'listProviders']);
-    Route::post('/', [ProviderController::class, 'insertProvider']);
-    Route::put('/{id}', [ProviderController::class, 'updateProvider']);
-    Route::delete('/{id}', [ProviderController::class, 'deleteProvider']);
-});
-
 // Clients
 Route::middleware(['auth:sanctum'])->prefix('clients')->group(function () {
     Route::get('/', [ClientController::class, 'listClients']);
@@ -38,6 +23,23 @@ Route::middleware(['auth:sanctum'])->prefix('clients')->group(function () {
     Route::put('/{id}', [ClientController::class, 'updateClient']);
     Route::delete('/{id}', [ClientController::class, 'deleteClient']);
 });
+
+// Avaliações
+Route::middleware(['auth:sanctum'])->prefix('evaluations')->group(function () {
+    Route::get('/', [EvaluationController::class, 'listEvaluations']);
+    Route::post('/', [EvaluationController::class, 'insertEvaluation']);
+    Route::put('/{id}', [EvaluationController::class, 'updateEvaluation']);
+    Route::delete('/{id}', [EvaluationController::class, 'deleteEvaluation']);
+});
+
+// Plans
+Route::middleware(['auth:sanctum'])->prefix('plans')->group(function () {
+    Route::get('/', [PlanController::class, 'listPlans']);
+    Route::post('/', [PlanController::class, 'insertPlan']);
+    Route::put('/{id}', [PlanController::class, 'updatePlan']);
+    Route::delete('/{id}', [PlanController::class, 'deletePlan']);
+});
+
 
 // Categories
 Route::middleware(['auth:sanctum'])->prefix('categories')->group(function () {

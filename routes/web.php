@@ -18,25 +18,20 @@ Route::middleware([
     config('jetstream.auth_session'), // Assegura que a sessao esta devidamente configurada
     'verified',
 ])->group(function () {
-    //Rota para a pagina de dashboard quando acedo a '/dashboard'
-//    Route::get('/dashboard', function () {
-//        return Inertia::render('Dashboard');
-//    })->name('dashboard');
-
-    //Rota para a página product quando acedo a '/products'
+    //Rota para a página Avaliação quando acedo a '/evaluations'
     Route::get('/evaluations', function () {
         return Inertia::render('Dashboard/Evaluation');
     })->middleware('check.permission:product,list')->name('evaluations');
 
-    //Rota para a página product quando acedo a '/clients'
+    //Rota para a página Cliente quando acedo a '/clients'
     Route::get('/clients', function () {
         return Inertia::render('Dashboard/Client');
     })->middleware('check.permission:client,list')->name('clients');
 
-    //Rota para a página provider quando acedo a '/providers'
-    Route::get('/providers', function () {
-        return Inertia::render('Provider');
-    })->middleware('check.permission:provider,list')->name('providers');
+    //Rota para a página Plano quando acedo a '/plans'
+    Route::get('/plans', function () {
+        return Inertia::render('Dashboard/Plan');
+    })->middleware('check.permission:plan,list')->name('plans');
 
     //Rota para a página location quando acedo a '/locations'
     Route::get('/locations', function () {
@@ -57,6 +52,12 @@ Route::middleware([
     Route::get('/usergroups', function () {
         return Inertia::render('UserGroup');
     })->name('user_groups');
+
+    //Rota para a pagina de dashboard quando acedo a '/dashboard'
+//    Route::get('/dashboard', function () {
+//        return Inertia::render('Dashboard');
+//    })->name('dashboard');
+
 });
 
 

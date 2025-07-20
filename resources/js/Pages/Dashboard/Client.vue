@@ -24,7 +24,7 @@
                     </div>
                     <!-- Container TABELA/LISTA -->
                     <div class="table-container">
-                        <el-table :data="tableData" style="width: 100%" max-height="320" v-loading="isLoading">
+                        <el-table :data="tableData" style="width: 100%" max-height="320" v-loading="isLoading" @sort-change="handleSortChange">
                             <el-table-column
                                 v-for="col in tableColumns"
                                 :key="col.property"
@@ -32,6 +32,7 @@
                                 :min-width="col.minWidth"
                                 :align="col.align"
                                 :formatter="col.formatter"
+                                :sortable="col.sortable"
                             >
                                 <template #header>
                                     <div class="flex items-center gap-2">
@@ -149,12 +150,12 @@ const pageSize = ref(10);
 const currentPage = ref(1);
 const totalItems = ref(0);
 const can_create = ref(false); //Permissao Add
+const sortColumn = ref(null);
+const sortOrder = ref(null);
 
 //Variaveis Nao Reactivas nao precisam de 'ref', pois nao sao alteradas.
-const tableColumns = [{ label: "Name", property: "name", minWidth: 100, icon: "person" }];
-
-// Acesso a toda a informacao da pagina, especialmente o utilizador logado
-const pageInfo = usePage();
+const tableColumns = [{ label: "Name", property: "name", minWidth: 350, icon: "person",sortable: true, },
+    { label: "Phone", property: "phone_number", minWidth: 100, icon: "call" }];
 
 // Metodos
 const getTableData = async () => {
@@ -163,6 +164,8 @@ const getTableData = async () => {
         searchFilter: searchFilter.value,
         page: currentPage.value,
         pageSize: pageSize.value,
+        sortBy: sortColumn.value,
+        sortOrder: sortOrder.value,
     };
 
     try {
@@ -248,6 +251,13 @@ const deleteItem = async (id) => {
             duration: 2000,
         });
     }
+};
+
+const handleSortChange = ({ column, prop, order }) => {
+    // Funcao que trata de ordenar por coluna e asc ou desc
+    sortColumn.value = prop;
+    sortOrder.value = order === "ascending" ? "asc" : order === "descending" ? "desc" : null;
+    getTableData();
 };
 const onRemoteOperation = (val) => {
     // Atualizo o pageSize e CurrentPage sempre que o valor é alterado

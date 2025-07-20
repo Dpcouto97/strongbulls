@@ -1,33 +1,28 @@
 <template>
-    <AppLayout title="Evaluation">
+    <AppLayout title="Plan">
         <div class="py-6">
             <div class="max-w-7xl mx-auto sm:px-4 lg:px-8">
                 <div class="main-content">
                     <!-- Container com ICON + TITULO-->
                     <div class="title-container flex items-center space-x-2">
-                        <span class="material-symbols-outlined" style="color: #1d3a32">health_metrics</span>
-                        <h1 class="title" style="color: #1d3a32">{{ $t("evaluations") }}</h1>
+                        <span class="material-symbols-outlined" style="color: #1d3a32">flowsheet</span>
+                        <h1 class="title" style="color: #1d3a32">{{ $t("plan") }}</h1>
                     </div>
                     <div class="filter-controls mb-3">
                         <div class="left-filter-container">
-                            <span class="material-symbols-outlined" style="font-size:25px;">manage_search</span>
+                            <span class="material-symbols-outlined" style="font-size: 25px">manage_search</span>
                             <div class="filter-controls flex-1">
-                                <!-- DateTime Range Filter -->
-                                <el-date-picker
-                                    v-model="dateFilter"
-                                    type="datetimerange"
-                                    unlink-panels
-                                    range-separator="To"
-                                    start-placeholder="Start"
-                                    end-placeholder="End"
-                                    :shortcuts="shortcuts"
-                                    size="default"
-                                    format="DD-MM-YYYY HH:mm"
-                                    value-format="YYYY-MM-DD HH:mm:ss"
+                                <!-- SEARCH BAR -->
+                                <el-input
+                                    style="width: 280px"
+                                    placeholder="Search..."
+                                    v-model="searchFilter"
+                                    search
+                                    clearable
                                     @change="getTableData"
+                                    class="white-bg-input"
                                 />
-
-                              <!-- Client Filter -->
+                                <!-- Client Filter -->
                                 <el-select
                                     v-model="clientFilter"
                                     placeholder="Clients"
@@ -80,7 +75,7 @@
                                         <button
                                             class="icon-button add-button ml-4"
                                             @click="addItem"
-                                            title="Add new Evaluation"
+                                            title="Add new Plan"
                                         >
                                             <span class="material-symbols-outlined">add_box</span>
                                         </button>
@@ -132,9 +127,9 @@
                         />
                     </div>
 
-                    <!-- Modal de criacao/Edicao de Produto -->
-                    <evaluation-modal
-                        ref="evaluation"
+                    <!-- Modal de criacao/Edicao de Plano -->
+                    <plan-modal
+                        ref="plan"
                         v-model:visible="showModal"
                         :edit-mode="editMode"
                         :row="rowData"
@@ -142,12 +137,8 @@
                         @update="getTableData"
                     />
 
-                    <!-- Modal Detalhes da Avaliação -->
-                    <evaluation-details-modal
-                        ref="evaluationDetails"
-                        v-model:visible="showDetailsModal"
-                        :data="rowData"
-                    />
+                    <!-- Modal Detalhes do Plano -->
+                    <plan-details-modal ref="planDetails" v-model:visible="showDetailsModal" :data="rowData" :clients-list="clientsList" />
                 </div>
             </div>
         </div>
@@ -156,20 +147,18 @@
 
 <script setup>
 import { ref, onMounted, computed } from "vue";
-import EvaluationModal from "@/Components/Modals/Evaluation/evaluationModal.vue";
-import EvaluationDetailsModal from "@/Components/Modals/Evaluation/evaluationDetailsModal.vue";
+import PlanModal from "@/Components/Modals/Plan/planModal.vue";
+import PlanDetailsModal from "@/Components/Modals/Plan/planDetailsModal.vue";
 import axios from "axios";
 import { ElNotification } from "element-plus";
 import { ElMessageBox } from "element-plus";
-import { usePage } from "@inertiajs/vue3";
 import "../../../css/table.css";
 import "../../../css/notification.css";
 import AppLayout from "@/Layouts/AppLayout.vue";
-import moment from "moment";
 
 //Defne o nome dado ao ficheiro
 defineOptions({
-    name: "Evaluation",
+    name: "Plan",
 });
 
 //LifeCycle OnMounted
@@ -186,7 +175,7 @@ const rowData = ref(null);
 const isLoading = ref(false);
 const tableData = ref([]);
 const clientFilter = ref([]);
-const dateFilter = ref([]);
+const searchFilter = ref([]);
 const clientsList = ref([]);
 const pageSize = ref(10);
 const currentPage = ref(1);
@@ -195,100 +184,18 @@ const can_create = ref(false); //Permissao Add
 const sortColumn = ref(null);
 const sortOrder = ref(null);
 
-const shortcuts = [
-    {
-        text: "Today",
-        value: () => {
-            const today = new Date();
-            const start = new Date(today.setHours(0, 0, 0, 0));
-            const end = new Date();
-            return [start, end];
-        },
-    },
-    {
-        text: "Last week",
-        value: () => {
-            const end = new Date();
-            const start = new Date();
-            start.setDate(end.getDate() - 7);
-            return [start, end];
-        },
-    },
-    {
-        text: "Last month",
-        value: () => {
-            const end = new Date();
-            const start = new Date();
-            start.setDate(end.getDate() - 30);
-            return [start, end];
-        },
-    },
-    {
-        text: "Current month",
-        value: () => {
-            const now = new Date();
-            const start = new Date(now.getFullYear(), now.getMonth(), 1);
-            const end = new Date();
-            return [start, end];
-        },
-    },
-    {
-        text: "Last 3 months",
-        value: () => {
-            const end = new Date();
-            const start = new Date();
-            start.setDate(end.getDate() - 90);
-            return [start, end];
-        },
-    },
-    {
-        text: "Last year",
-        value: () => {
-            const end = new Date();
-            const start = new Date();
-            start.setFullYear(end.getFullYear() - 1);
-            return [start, end];
-        },
-    },
-];
-
 //Variaveis Nao Reactivas nao precisam de 'ref', pois nao sao alteradas.
 const tableColumns = [
     {
-        label: "Date",
-        property: "date",
-        formatter: (row) => moment(row.date).format("DD-MM-YYYY HH:mm"),
-        icon: "calendar_today",
+        label: "Name",
+        property: "name",
+        icon: "flowsheet",
         sortable: true,
     },
     {
-        label: "Client Name",
-        property: "client_id",
-        formatter: (row) => (row.client_id && row.client ? row.client.name : ""),
-        icon: "person",
-    },
-    {
-        label: "Weight",
-        property: "weight",
-        formatter: (row) => (row.weight ? row.weight + " kg" : " "),
-        icon: "scale",
-    },
-    {
-        label: "IMC",
-        property: "imc",
-        icon: "straighten",
-    },
-    {
-        label: "Body Fat",
-        property: "body_fat",
-        formatter: (row) => (row.body_fat ? row.body_fat + " %" : " "),
-        icon: "body_fat",
-    },
-    {
-        label: "Muscle Mass",
-        property: "muscle_mass",
-        formatter: (row) => (row.muscle_mass ? row.muscle_mass + " kg" : " "),
-        icon: "exercise",
+        label: "Type",
+        property: "type",
+        icon: "merge_type",
     },
 ];
 // Metodos
@@ -296,7 +203,7 @@ const getTableData = async () => {
     //Busca a lista de Items da tabela da BD.
     let filters = {
         clientFilter: clientFilter.value,
-        dateFilter: dateFilter.value,
+        searchFilter: searchFilter.value,
         page: currentPage.value,
         pageSize: pageSize.value,
         sortBy: sortColumn.value,
@@ -306,15 +213,13 @@ const getTableData = async () => {
     try {
         isLoading.value = true;
         //Chamada GET API
-        const response = await axios.get("/api/evaluations", { params: filters });
+        const response = await axios.get("/api/plans", { params: filters });
 
         if (response.data.success) {
             tableData.value = response.data.data.list.data;
             totalItems.value = response.data.data.list.total;
             can_create.value = response.data.data.permissions.can_create;
-            isLoading.value = false;
         } else {
-            isLoading.value = false;
         }
     } catch (error) {
         ElNotification({
@@ -322,6 +227,7 @@ const getTableData = async () => {
             type: "error",
             duration: 1400,
         });
+    } finally {
         isLoading.value = false;
     }
 };
@@ -369,7 +275,7 @@ const detailItem = (row) => {
 const deleteItem = async (id) => {
     try {
         // Mostramos caixa de confirmacao para nao eliminar de forma inesperada.
-        await ElMessageBox.confirm("Are you sure you want to delete this evaluation?", {
+        await ElMessageBox.confirm("Are you sure you want to delete this Plan?", {
             confirmButtonText: "Confirm",
             cancelButtonText: "Cancel",
             type: "warning",
@@ -379,7 +285,7 @@ const deleteItem = async (id) => {
         });
 
         // Chamo o metodo para eliminar o item
-        const response = await axios.delete(`/api/evaluations/${id}`);
+        const response = await axios.delete(`/api/plans/${id}`);
 
         if (response.data.success) {
             // Atualizo a tabela apos eliminar o item desejado
@@ -388,12 +294,12 @@ const deleteItem = async (id) => {
             //Mostro msg de sucesso da eliminacao
             ElNotification({
                 title: "Success",
-                message: "Evaluation deleted successfully",
+                message: "Plan deleted successfully",
                 type: "success",
                 duration: 1400,
             });
         } else {
-            console.log("Error deleting evaluation");
+            console.log("Error deleting plan");
         }
     } catch (error) {
         if (error === "cancel" || error === "close") {
@@ -402,7 +308,7 @@ const deleteItem = async (id) => {
         console.error("Error", error);
         ElNotification({
             title: "Error",
-            message: error.response?.data?.message || "Failed to delete the Evaluation.",
+            message: error.response?.data?.message || "Failed to delete the Plan.",
             type: "error",
             duration: 2000,
         });

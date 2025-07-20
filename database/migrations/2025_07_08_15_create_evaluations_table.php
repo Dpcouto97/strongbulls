@@ -14,8 +14,7 @@ return new class extends Migration
         Schema::create('evaluations', function (Blueprint $table) {
             $table->id();
             $table->foreignId('client_id')->nullable()->constrained();      // Cliente
-            $table->date('date')->nullable();                               // Data
-            $table->integer('height')->nullable();                          // Altura
+            $table->dateTime('date')->nullable();                           // Data e hora
             $table->integer('bmr')->nullable();                             // Numero minimo de calorias necessarias
             $table->integer('visceral_fat')->nullable();                    // Gordura Visceral
             $table->decimal('weight', 8, 2)->nullable();        // PESO
@@ -24,6 +23,7 @@ return new class extends Migration
             $table->decimal('bone_mass', 8, 2)->nullable();     // Massa Ossea
             $table->decimal('body_fat', 8, 2)->nullable();      // Gordura Corporal
             $table->decimal('body_water', 8, 2)->nullable();    // Agua no Corpo
+            $table->text('attachments')->nullable();
             $table->text('description')->nullable();
             $table->timestamps();
             $table->softDeletes();  // Adiciona a coluna deleted_at através do softDeletes

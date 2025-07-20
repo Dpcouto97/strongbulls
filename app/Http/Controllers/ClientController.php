@@ -36,13 +36,23 @@ class ClientController extends Controller
             // Filtros
             $searchFilter = $request['searchFilter'];
             $pageSize = $request['pageSize'];
+            $sortBy = $request->input('sortBy', 'name'); // default 'date'
+            $sortOrder = $request->input('sortOrder', 'asc'); // default' desc'
 
             if (!empty($searchFilter)) {
                 $query->where('name', 'like', '%' . $searchFilter . '%');
             }
 
-            //Ordenar pelo nome
-            $query->orderBy('name');
+            // Validação segura do sortBy e sortOrder
+            $allowedSortFields = ['name'];
+            $allowedSortOrder = ['asc', 'desc'];
+
+            if (in_array($sortBy, $allowedSortFields) && in_array($sortOrder, $allowedSortOrder)) {
+                $query->orderBy($sortBy, $sortOrder);
+            } else {
+                // Default sort
+                $query->orderBy('name', 'asc');
+            }
 
             // Retorna paginado ou todas as entradas
             if (is_numeric($pageSize)) {
@@ -87,6 +97,7 @@ class ClientController extends Controller
             'address' => 'nullable|string',
             'nif' => 'nullable|string',
             'birth_date' => 'nullable|date',
+            'height' => 'required|integer',
             'description' => 'nullable|string',
         ]);
 
@@ -116,6 +127,7 @@ class ClientController extends Controller
         $client->description = $validated['description'];
         $client->address = $validated['address'];
         $client->nif = $validated['nif'];
+        $client->height = $validated['height'];
         $client->birth_date = $validated['birth_date'];
         $client->created_by = $user->id;
         $client->updated_by = $user->id;
@@ -145,6 +157,7 @@ class ClientController extends Controller
             'address' => 'nullable|string',
             'nif' => 'nullable|string',
             'birth_date' => 'nullable|date',
+            'height' => 'required|integer',
             'description' => 'nullable|string',
         ]);
 
@@ -210,6 +223,7 @@ class ClientController extends Controller
         $client->phone_number = $validated['phone_number'];
         $client->address = $validated['address'];
         $client->nif = $validated['nif'];
+        $client->height = $validated['height'];
         $client->birth_date = $validated['birth_date'];
         $client->description = $validated['description'];
         $client->updated_by = $user->id;
@@ -270,6 +284,7 @@ class ClientController extends Controller
             'phone_number' => $client->phone_number,
             'address' => $client->address,
             'nif' => $client->nif,
+            'height' => $client->height,
             'birth_date' => $client->birth_date,
             'description' => $client->description,
             'attachments' => $attachments,

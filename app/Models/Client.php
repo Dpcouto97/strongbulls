@@ -11,7 +11,7 @@ class Client extends Model
 
     protected $table = 'clients';
     protected $fillable = [
-        'name', 'email', 'phone_number', 'address', 'birth_date','nif','description','created_by', 'updated_by', 'deleted_by'
+        'name', 'email', 'phone_number', 'address', 'birth_date','nif','height','description','created_by', 'updated_by', 'deleted_by'
     ];
 
     //Planos ( N - N ) - 1 cliente pode estar associado a varios planos, 1 plano pode ter varios clientes associados.
