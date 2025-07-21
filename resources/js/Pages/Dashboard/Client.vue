@@ -13,7 +13,7 @@
                             <div><span class="material-symbols-outlined" style="font-size: 25px">search</span></div>
                             <el-input
                                 style="width: 280px"
-                                placeholder="Search..."
+                                :placeholder="$t('search')"
                                 v-model="searchFilter"
                                 search
                                 clearable
@@ -24,7 +24,7 @@
                     </div>
                     <!-- Container TABELA/LISTA -->
                     <div class="table-container">
-                        <el-table :data="tableData" style="width: 100%" max-height="320" v-loading="isLoading" @sort-change="handleSortChange">
+                        <el-table :data="tableData" style="width: 100%" max-height="50vh" v-loading="isLoading" @sort-change="handleSortChange">
                             <el-table-column
                                 v-for="col in tableColumns"
                                 :key="col.property"
@@ -45,7 +45,7 @@
                             <el-table-column align="center" width="140" class-name="left-gap">
                                 <template #header>
                                     <div v-if="can_create" class="flex items-center justify-center">
-                                        <button class="icon-button add-button" @click="addItem" title="Add new Client">
+                                        <button class="icon-button add-button" @click="addItem" :title="$t('add_new')">
                                             <span class="material-symbols-outlined">add_box</span>
                                         </button>
                                     </div>
@@ -56,7 +56,7 @@
                                             v-if="row.can_edit"
                                             class="icon-button edit-button"
                                             @click="editItem(row)"
-                                            title="Edit"
+                                            :title="$t('edit')"
                                         >
                                             <span class="material-symbols-outlined">edit_square</span>
                                         </button>
@@ -64,7 +64,7 @@
                                             v-if="row.can_delete"
                                             class="icon-button delete-button"
                                             @click="deleteItem(row.id)"
-                                            title="Delete"
+                                            :title="$t('delete')"
                                         >
                                             <span class="material-symbols-outlined">delete</span>
                                         </button>
@@ -72,7 +72,7 @@
                                             v-if="row.can_details"
                                             class="icon-button details-button"
                                             @click="detailItem(row)"
-                                            title="Details"
+                                            :title="$t('details')"
                                         >
                                             <span class="material-symbols-outlined">info</span>
                                         </button>
@@ -121,12 +121,9 @@ import ClientDetailsModal from "@/Components/Modals/Client/clientDetailsModal.vu
 import axios from "axios";
 import { ElNotification } from "element-plus";
 import { ElMessageBox } from "element-plus";
-import { usePage } from "@inertiajs/vue3";
 import "../../../css/table.css";
 import "../../../css/notification.css";
 import AppLayout from "@/Layouts/AppLayout.vue";
-import clientIcon from "@/Icons/client.svg?url";
-import clientWhiteIcon from "@/Icons/clientWhiteIcon.svg?url";
 
 //Defne o nome dado ao ficheiro
 defineOptions({
@@ -139,6 +136,7 @@ onMounted(() => {
 });
 
 // Variaveis Reactivas - Acedidas em JS atraves de 'variavel.value'
+const $t = (key) => window.translations?.[key] || key;
 const showModal = ref(false);
 const showDetailsModal = ref(false);
 const editMode = ref(false);
@@ -154,8 +152,8 @@ const sortColumn = ref(null);
 const sortOrder = ref(null);
 
 //Variaveis Nao Reactivas nao precisam de 'ref', pois nao sao alteradas.
-const tableColumns = [{ label: "Name", property: "name", minWidth: 350, icon: "person",sortable: true, },
-    { label: "Phone", property: "phone_number", minWidth: 100, icon: "call" }];
+const tableColumns = [{ label: $t('client'), property: "name", minWidth: 350, icon: "person",sortable: true, },
+    { label: $t('phone'), property: "phone_number", minWidth: 100, icon: "call" }];
 
 // Metodos
 const getTableData = async () => {
@@ -213,9 +211,9 @@ const detailItem = (row) => {
 const deleteItem = async (id) => {
     try {
         // Mostramos caixa de confirmacao para nao eliminar de forma inesperada.
-        await ElMessageBox.confirm("Are you sure you want to delete this client?", {
-            confirmButtonText: "Confirm",
-            cancelButtonText: "Cancel",
+        await ElMessageBox.confirm($t('confirm_delete_client'), {
+            confirmButtonText: $t('confirm'),
+            cancelButtonText: $t('cancel'),
             type: "warning",
             center: true,
             buttonSize: "large",
@@ -231,13 +229,11 @@ const deleteItem = async (id) => {
 
             //Mostro msg de sucesso da eliminacao
             ElNotification({
-                title: "Success",
-                message: "Client deleted successfully",
+                title: $t('success'),
+                message: $t('success_deleting_client'),
                 type: "success",
                 duration: 1400,
             });
-        } else {
-            console.log("Error deleting provider");
         }
     } catch (error) {
         if (error === "cancel" || error === "close") {
@@ -246,7 +242,7 @@ const deleteItem = async (id) => {
         console.error("Error", error);
         ElNotification({
             title: "Error",
-            message: error.response?.data?.message || "Failed to delete the Client.",
+            message: error.response?.data?.message || $t('error_deleting_client'),
             type: "error",
             duration: 2000,
         });

@@ -7,7 +7,7 @@
                     {{ editMode ? "edit_square" : "add_box" }}
                 </span>
                 <h2 class="text-2xl font-semibold text-gray-800">
-                    {{ editMode ? "Edit Client" : "Create Client" }}
+                    {{ editMode ? $t('edit_client') : $t('create_client') }}
                 </h2>
             </div>
         </template>
@@ -19,10 +19,10 @@
                 <template #label>
                     <div class="flex items-center space-x-1">
                         <span class="material-symbols-outlined">person</span>
-                        <span>Name</span>
+                        <span>{{ $t('name') }}</span>
                     </div>
                 </template>
-                <el-input v-model="form.name" placeholder="Write here..." />
+                <el-input v-model="form.name" :placeholder="$t('write_here')"/>
             </el-form-item>
 
             <!-- EMAIL -->
@@ -33,7 +33,7 @@
                         <span>Email</span>
                     </div>
                 </template>
-                <el-input v-model="form.email" placeholder="Write here..." clearable />
+                <el-input v-model="form.email" :placeholder="$t('write_here')" clearable />
             </el-form-item>
 
             <!-- PHONE NUMBER -->
@@ -41,10 +41,10 @@
                 <template #label>
                     <div class="flex items-center space-x-1">
                         <img :src="phoneIcon" alt="icon" class="w-4 h-4" />
-                        <span>Phone Number</span>
+                        <span>{{ $t('phone_number') }}</span>
                     </div>
                 </template>
-                <el-input v-model="form.phone_number" placeholder="Write here..." />
+                <el-input v-model="form.phone_number" :placeholder="$t('write_here')" />
             </el-form-item>
 
             <!-- ADDRESS -->
@@ -52,10 +52,10 @@
                 <template #label>
                     <div class="flex items-center space-x-1">
                         <img :src="locationIcon" alt="icon" class="w-4 h-4" />
-                        <span>Address</span>
+                        <span>{{ $t('address') }}</span>
                     </div>
                 </template>
-                <el-input v-model="form.address" placeholder="Write here..." />
+                <el-input v-model="form.address" :placeholder="$t('write_here')" />
             </el-form-item>
 
             <!-- NIF -->
@@ -66,7 +66,7 @@
                         <span>NIF</span>
                     </div>
                 </template>
-                <el-input v-model="form.nif" placeholder="Write here..." />
+                <el-input v-model="form.nif" :placeholder="$t('write_here')" />
             </el-form-item>
 
             <!-- Height -->
@@ -74,7 +74,7 @@
                 <template #label>
                     <div class="flex items-center space-x-1">
                         <img :src="rullerIcon" alt="icon" class="w-4 h-4 filter brightness-1 invert" />
-                        <span>Height</span>
+                        <span>{{ $t('height') }}</span>
                     </div>
                 </template>
                 <el-input
@@ -96,13 +96,13 @@
                 <template #label>
                     <div class="flex items-center space-x-1">
                         <img :src="birthDateIcon" alt="icon" class="w-4 h-4 filter brightness-1 invert" />
-                        <span>Birth Date</span>
+                        <span>{{ $t('birth_date') }}</span>
                     </div>
                 </template>
                 <el-date-picker
                     v-model="form.birth_date"
                     type="date"
-                    placeholder="Pick a date"
+                    :placeholder="$t('pick_date')"
                     value-format="YYYY-MM-DD"
                 />
             </el-form-item>
@@ -112,7 +112,7 @@
                 <template #label>
                     <div class="flex items-center space-x-1">
                         <img :src="reportIcon" alt="icon" class="w-4 h-4" />
-                        <span>Description</span>
+                        <span>{{ $t('description') }}</span>
                     </div>
                 </template>
                 <el-input
@@ -120,7 +120,7 @@
                     type="textarea"
                     :rows="3"
                     v-model="form.description"
-                    placeholder="Write here..."
+                    :placeholder="$t('write_here')"
                 />
             </el-form-item>
 
@@ -129,7 +129,7 @@
                 <template #label>
                     <div class="flex items-center space-x-1">
                         <img :src="attachmentIcon" alt="icon" class="w-4 h-4" />
-                        <span>Attachments</span>
+                        <span>{{ $t('attachments') }}</span>
                     </div>
                 </template>
                 <files-upload ref="filesUploadRef"></files-upload>
@@ -145,7 +145,7 @@
                 class="w-full text-white save-button"
                 @click="submitUpdate"
             >
-                {{ editMode ? "SAVE CHANGES" : "CREATE CLIENT" }}
+                {{ editMode ? $t('save_changes') : $t('create_client') }}
             </el-button>
         </template>
     </el-dialog>
@@ -182,6 +182,7 @@ const emit = defineEmits(["update:visible", "update"]);
 
 // Ref - define uma variavel para uso geral no componente
 // Variaveis Reativas
+const $t = (key) => window.translations?.[key] || key;
 const formRef = ref(null);
 const filesUploadRef = ref(null);
 const isLoading = ref(false);
@@ -316,7 +317,7 @@ const submitUpdate = async () => {
 
             if (response.data.success) {
                 ElNotification({
-                    title: "Success",
+                    title: $t('success'),
                     type: "success",
                     duration: 1400,
                 });

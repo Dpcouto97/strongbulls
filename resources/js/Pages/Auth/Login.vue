@@ -46,7 +46,7 @@ const submit = () => {
 
                 <!-- Form -->
                 <form @submit.prevent="submit" class="ml-4">
-                    <h2 class="mb-10 title-font" style="font-size:25px">LOG IN</h2>
+                    <h2 class="mb-10 title-font" style="font-size:25px">{{ $t('login') }}</h2>
 
                     <!-- Email -->
                     <div class="mb-4">
@@ -74,11 +74,11 @@ const submit = () => {
                             class="w-full border-0 border-b-2 border-gray-400 focus:border-black focus:ring-0 pl-0"
                             required
                             autocomplete="current-password"
-                            placeholder="PASSWORD"
+                            :placeholder="$t('password')"
                         />
                         <div class="flex justify-end">
                             <Link v-if="canResetPassword" :href="route('password.request')" class="text-sm text-gray-500 hover:text-gray-800 mt-1 underline">
-                                Forgot your password?
+                                {{ $t('forgot_password')}}
                             </Link>
                         </div>
                         <div class="text-red-500 text-xs mt-1" v-if="form.errors.password">{{ form.errors.password }}</div>
@@ -92,7 +92,7 @@ const submit = () => {
                             :class="{ 'opacity-50': form.processing }"
                             :disabled="form.processing"
                         >
-                            Log in
+                            Log In
                         </button>
                     </div>
                 </form>

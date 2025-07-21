@@ -21,7 +21,7 @@
             <div>
                 <div class="label px-4 py-2 flex items-center gap-2">
                     <img :src="planIcon" alt="icon" class="w-4 h-4 filter brightness-0 invert" />
-                    <span>Name</span>
+                    <span>{{ $t('name') }}</span>
                 </div>
                 <div class="bg-gray-100 px-4 py-2">{{ data.name || "—" }}</div>
             </div>
@@ -30,7 +30,7 @@
             <div>
                 <div class="label px-4 py-2 flex items-center gap-2">
                     <img :src="typeIcon" alt="icon" class="w-4 h-4 filter brightness-0 invert" />
-                    <span>Type</span>
+                    <span>{{ $t('type') }}</span>
                 </div>
                 <div class="bg-gray-100 px-4 py-2">{{ data.type || "—" }}</div>
             </div>
@@ -39,7 +39,7 @@
             <div v-if="data.clients && data.clients.length" class="col-span-1 md:col-span-2">
                 <div class="label px-4 py-2 flex items-center gap-2">
                     <img :src="clientIcon" alt="icon" class="w-4 h-4 filter brightness-0 invert" />
-                    <span>Clients</span>
+                    <span>{{ $t('client') }}</span>
                 </div>
                 <div class="bg-gray-100 px-4 py-2">{{ getClientNames(data.clients).join(", ") }}</div>
             </div>
@@ -48,7 +48,7 @@
             <div class="col-span-1 md:col-span-2">
                 <div class="label px-4 py-2 flex items-center gap-2">
                     <img :src="reportIcon" alt="icon" class="w-4 h-4 filter brightness-0 invert" />
-                    <span>Description</span>
+                    <span>{{ $t('description') }}</span>
                 </div>
                 <div class="bg-gray-100 px-4 py-2">{{ data.description || "—" }}</div>
             </div>
