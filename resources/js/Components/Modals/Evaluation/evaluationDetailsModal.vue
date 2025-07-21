@@ -23,13 +23,13 @@
         <!-- Ultima Avaliacao Comparacao -->
         <div class="last-evaluation-container" v-if="data.last_evaluation_compare">
             <div class="last-date-container">
-                {{ "Since " + formatDateTime(data.last_evaluation_compare?.date) }}
+                {{ $t('since') + formatDateTime(data.last_evaluation_compare?.date) }}
             </div>
             <div class="compare-values-container">
                 <div class="compare-box" v-if="data.weight">
                     <span class="value">{{ getDifference(data.weight, data.last_evaluation_compare.weight) }}</span>
                     <span class="unit">kg</span>
-                    <div class="label">Weight</div>
+                    <div class="label">{{ $t('weight') }}</div>
                 </div>
                 <div class="compare-box" v-if="data.imc">
                     <span class="value">{{ getDifference(data.imc, data.last_evaluation_compare.imc) }}</span>
@@ -38,14 +38,14 @@
                 <div class="compare-box" v-if="data.body_fat">
                     <span class="value">{{ getDifference(data.body_fat, data.last_evaluation_compare.body_fat) }}</span>
                     <span class="unit">%</span>
-                    <div class="label">Body Fat</div>
+                    <div class="label">{{ $t('body_fat') }}</div>
                 </div>
                 <div class="compare-box" v-if="data.muscle_mass">
                     <span class="value">
                         {{ getDifference(data.muscle_mass, data.last_evaluation_compare.muscle_mass) }}
                     </span>
                     <span class="unit">kg</span>
-                    <div class="label">Muscle Mass</div>
+                    <div class="label">{{ $t('muscle_mass') }}</div>
                 </div>
             </div>
         </div>
@@ -55,7 +55,7 @@
                 <template #title>
                     <div class="custom-title">
                         <span class="material-symbols-outlined">scale</span>
-                        <span class="title-text">Weight</span>
+                        <span class="title-text">{{ $t('weight') }}</span>
                         <span class="info-badge" :style="{ color: currentWeightColor }">
                             {{ data.weight + " Kg" }}
                         </span>
@@ -85,7 +85,7 @@
                 <template #title>
                     <div class="custom-title">
                         <span class="material-symbols-outlined">body_fat</span>
-                        <span class="title-text">Body Fat</span>
+                        <span class="title-text">{{ $t('body_fat') }}</span>
                         <span class="info-badge" :style="{ color: bodyFatValueColor }">
                             {{ data.body_fat + "%" }}
                         </span>
@@ -97,7 +97,7 @@
                 <template #title>
                     <div class="custom-title">
                         <span class="material-symbols-outlined">gastroenterology</span>
-                        <span class="title-text">Visceral Fat</span>
+                        <span class="title-text">{{ $t('visceral_fat') }}</span>
                         <span class="info-badge" :style="{ color: visceralValueColor }">
                             {{ data.visceral_fat }}
                         </span>
@@ -109,7 +109,7 @@
                 <template #title>
                     <div class="custom-title">
                         <span class="material-symbols-outlined">humidity_high</span>
-                        <span class="title-text">Body Water</span>
+                        <span class="title-text">{{ $t('body_water') }}</span>
                         <span class="info-badge" :style="{ color: waterValueColor }">
                             {{ data.body_water + "%" }}
                         </span>
@@ -121,7 +121,7 @@
                 <template #title>
                     <div class="custom-title">
                         <span class="material-symbols-outlined">exercise</span>
-                        <span class="title-text">Muscle Mass</span>
+                        <span class="title-text">{{ $t('muscle_mass') }}</span>
                         <span class="info-badge" :style="{ color: muscleMassColor }">
                             {{ data.muscle_mass + "Kg" }}
                         </span>
@@ -133,7 +133,7 @@
                 <template #title>
                     <div class="custom-title">
                         <span class="material-symbols-outlined">pet_supplies</span>
-                        <span class="title-text">Bone Mass</span>
+                        <span class="title-text">{{ $t('bone_mass') }}</span>
                         <span class="info-badge" :style="{ color: boneMassColor }">
                             {{ data.bone_mass + "Kg" }}
                         </span>
@@ -145,7 +145,7 @@
                 <template #title>
                     <div class="custom-title">
                         <span class="material-symbols-outlined">article</span>
-                        <span class="title-text">Description</span>
+                        <span class="title-text">{{ $t('description') }}</span>
                     </div>
                 </template>
                 {{ data.description }}
@@ -154,7 +154,7 @@
                 <template #title>
                     <div class="custom-title">
                         <span class="material-symbols-outlined">attach_file</span>
-                        <span class="title-text">Attachments</span>
+                        <span class="title-text">{{ $t('attachments') }}</span>
                     </div>
                 </template>
                 <div v-if="data.attachments?.length">
@@ -191,12 +191,13 @@ const props = defineProps({
 //Define os emits
 const emit = defineEmits(["update:visible"]);
 
+const $t = (key) => window.translations?.[key] || key;
 const activeCards = ref([]);
 const height = ref(null);
 const weight = ref(null);
 const imcRanges = [
     {
-        label: "Underweight",
+        label: $t('underweight'),
         max: 18.5,
         color: "#2563eb",
     },
@@ -206,12 +207,12 @@ const imcRanges = [
         color: "#059669",
     },
     {
-        label: "Overweight",
+        label: $t('overweight'),
         max: 30,
         color: "#f59e0b",
     },
     {
-        label: "Obesity",
+        label: $t('obesity'),
         max: 35,
         color: "#dc2626",
     },
@@ -219,22 +220,22 @@ const imcRanges = [
 
 const visceralRanges = [
     {
-        label: "Excellent",
+        label: $t('excellent'),
         max: 6,
         color: "#059669",
     },
     {
-        label: "Acceptable",
+        label: $t('acceptable'),
         max: 11,
         color: "#10b981",
     },
     {
-        label: "High",
+        label: $t('high'),
         max: 15,
         color: "#f59e0b",
     },
     {
-        label: "Excessive",
+        label: $t('excessive'),
         max: 20,
         color: "#dc2626",
     },
@@ -242,7 +243,7 @@ const visceralRanges = [
 
 const waterRanges = [
     {
-        label: "Low",
+        label: $t('low'),
         max: 50,
         color: "#2563eb",
     },
@@ -252,7 +253,7 @@ const waterRanges = [
         color: "#10b981",
     },
     {
-        label: "High",
+        label: $t('high'),
         max: 100,
         color: "#f59e0b",
     },
@@ -260,27 +261,27 @@ const waterRanges = [
 
 const bodyFatRanges = [
     {
-        label: "Essential Fat",
+        label: $t('essential_fat'),
         max: 6,
         color: "#2563eb",
     },
     {
-        label: "Athletic",
+        label: $t('athletic'),
         max: 13,
         color: "#059669",
     },
     {
-        label: "In Shape",
+        label: $t('in_shape'),
         max: 17,
         color: "#10b981",
     },
     {
-        label: "Acceptable",
+        label: $t('acceptable'),
         max: 25,
         color: "#6ee7b7",
     },
     {
-        label: "High",
+        label: $t('high'),
         max: 32,
         color: "#dc2626",
     },
@@ -383,7 +384,7 @@ const generateWeightRanges = (heightMeters) => {
 
     return [
         {
-            label: "Underweight",
+            label: $t('underweight'),
             max: parseFloat((18.5 * h2).toFixed(2)),
             color: "#2563eb",
         },
@@ -393,12 +394,12 @@ const generateWeightRanges = (heightMeters) => {
             color: "#059669",
         },
         {
-            label: "Overweight",
+            label: $t('overweight'),
             max: parseFloat((29.9 * h2).toFixed(2)),
             color: "#f59e0b",
         },
         {
-            label: "Obesity",
+            label: $t('obesity'),
             max: parseFloat((40 * h2).toFixed(2)),
             color: "#dc2626",
         },
@@ -410,7 +411,7 @@ const generateMuscleMassRanges = (heightMeters) => {
 
     return [
         {
-            label: "Low",
+            label: $t('low'),
             max: parseFloat((18 * h2).toFixed(2)),
             color: "#2563eb",
         },
@@ -420,7 +421,7 @@ const generateMuscleMassRanges = (heightMeters) => {
             color: "#10b981",
         },
         {
-            label: "High",
+            label: $t('high'),
             max: parseFloat((26 * h2).toFixed(2)),
             color: "#059669",
         },
@@ -432,7 +433,7 @@ const generateBoneMassRanges = (heightMeters) => {
 
     return [
         {
-            label: "Low",
+            label: $t('low'),
             max: parseFloat((base * 0.03).toFixed(2)),
             color: "#f59e0b",
         },
@@ -442,7 +443,7 @@ const generateBoneMassRanges = (heightMeters) => {
             color: "#10b981",
         },
         {
-            label: "High",
+            label: $t('high'),
             max: parseFloat((base * 0.06).toFixed(2)),
             color: "#059669",
         },

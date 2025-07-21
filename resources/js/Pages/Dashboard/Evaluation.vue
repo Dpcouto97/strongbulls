@@ -16,7 +16,7 @@
                             v-if="visualizationMode === 'table'"
                             class="graphic-button"
                             @click="changeVisualizationMode('graphic')"
-                            title="Graphic Mode"
+                            :title="$t('graphic_mode')"
                         >
                             <span class="material-symbols-outlined text-xl">timeline</span>
                         </button>
@@ -25,7 +25,7 @@
                             v-else
                             class="graphic-button"
                             @click="changeVisualizationMode('table')"
-                            title="Table Mode"
+                            :title="$t('table_mode')"
                         >
                             <span class="material-symbols-outlined text-xl">table</span>
                         </button>
@@ -39,9 +39,9 @@
                                     v-model="dateFilter"
                                     type="datetimerange"
                                     unlink-panels
-                                    range-separator="To"
-                                    start-placeholder="Start"
-                                    end-placeholder="End"
+                                    range-separator="-"
+                                    :start-placeholder="$t('start')"
+                                    :end-placeholder="$t('end')"
                                     :shortcuts="shortcuts"
                                     size="default"
                                     format="DD-MM-YYYY HH:mm"
@@ -52,7 +52,7 @@
                                 <!-- Client Filter -->
                                 <el-select
                                     v-model="clientFilter"
-                                    placeholder="Choose Client"
+                                    :placeholder="$t('choose_client')"
                                     style="width: 240px"
                                     clearable
                                     filterable
@@ -101,7 +101,7 @@
                                             <button
                                                 class="icon-button add-button ml-4"
                                                 @click="addItem"
-                                                title="Add new Evaluation"
+                                                :title="$t('add_new')"
                                             >
                                                 <span class="material-symbols-outlined">add_box</span>
                                             </button>
@@ -113,7 +113,7 @@
                                                 v-if="row.can_edit"
                                                 class="icon-button edit-button"
                                                 @click="editItem(row)"
-                                                title="Edit"
+                                                :title="$t('edit')"
                                             >
                                                 <span class="material-symbols-outlined">edit_square</span>
                                             </button>
@@ -121,7 +121,7 @@
                                                 v-if="row.can_delete"
                                                 class="icon-button delete-button"
                                                 @click="deleteItem(row.id)"
-                                                title="Delete"
+                                                :title="$t('delete')"
                                             >
                                                 <span class="material-symbols-outlined">delete</span>
                                             </button>
@@ -129,7 +129,7 @@
                                                 v-if="row.can_details"
                                                 class="icon-button details-button"
                                                 @click="detailItem(row)"
-                                                title="Details"
+                                                :title="$t('details')"
                                             >
                                                 <span class="material-symbols-outlined">info</span>
                                             </button>
@@ -188,7 +188,6 @@ import healthChart from "@/Components/Custom/healthChart.vue";
 import axios from "axios";
 import { ElNotification } from "element-plus";
 import { ElMessageBox } from "element-plus";
-import { usePage } from "@inertiajs/vue3";
 import "../../../css/table.css";
 import "../../../css/notification.css";
 import AppLayout from "@/Layouts/AppLayout.vue";
@@ -206,6 +205,7 @@ onMounted(() => {
 });
 
 // Variaveis Reactivas - Acedidas em JS atraves de 'variavel.value'
+const $t = (key) => window.translations?.[key] || key;
 const showModal = ref(false);
 const showDetailsModal = ref(false);
 const editMode = ref(false);
@@ -225,7 +225,7 @@ const visualizationMode = ref("table");
 
 const shortcuts = [
     {
-        text: "Today",
+        text: $t("today"),
         value: () => {
             const today = new Date();
             const start = new Date(today.setHours(0, 0, 0, 0));
@@ -234,7 +234,7 @@ const shortcuts = [
         },
     },
     {
-        text: "Last week",
+        text: $t("last_week"),
         value: () => {
             const end = new Date();
             const start = new Date();
@@ -243,7 +243,7 @@ const shortcuts = [
         },
     },
     {
-        text: "Last month",
+        text: $t("last_month"),
         value: () => {
             const end = new Date();
             const start = new Date();
@@ -252,7 +252,7 @@ const shortcuts = [
         },
     },
     {
-        text: "Current month",
+        text: $t("current_month"),
         value: () => {
             const now = new Date();
             const start = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -261,7 +261,7 @@ const shortcuts = [
         },
     },
     {
-        text: "Last 3 months",
+        text: $t("last_three_months"),
         value: () => {
             const end = new Date();
             const start = new Date();
@@ -270,7 +270,7 @@ const shortcuts = [
         },
     },
     {
-        text: "Last year",
+        text: $t("last_year"),
         value: () => {
             const end = new Date();
             const start = new Date();
@@ -283,20 +283,20 @@ const shortcuts = [
 //Variaveis Nao Reactivas nao precisam de 'ref', pois nao sao alteradas.
 const tableColumns = [
     {
-        label: "Date",
+        label: $t("date"),
         property: "date",
         formatter: (row) => moment(row.date).format("DD-MM-YYYY HH:mm"),
         icon: "calendar_today",
         sortable: true,
     },
     {
-        label: "Client Name",
+        label: $t("client"),
         property: "client_id",
         formatter: (row) => (row.client_id && row.client ? row.client.name : ""),
         icon: "person",
     },
     {
-        label: "Weight",
+        label: $t("weight"),
         property: "weight",
         formatter: (row) => (row.weight ? row.weight + " kg" : " "),
         icon: "scale",
@@ -305,15 +305,16 @@ const tableColumns = [
         label: "IMC",
         property: "imc",
         icon: "straighten",
+        minWidth: 60
     },
     {
-        label: "Body Fat",
+        label: $t("body_fat"),
         property: "body_fat",
         formatter: (row) => (row.body_fat ? row.body_fat + " %" : " "),
         icon: "body_fat",
     },
     {
-        label: "Muscle Mass",
+        label: $t("muscle_mass"),
         property: "muscle_mass",
         formatter: (row) => (row.muscle_mass ? row.muscle_mass + " kg" : " "),
         icon: "exercise",
@@ -411,9 +412,9 @@ const detailItem = (row) => {
 const deleteItem = async (id) => {
     try {
         // Mostramos caixa de confirmacao para nao eliminar de forma inesperada.
-        await ElMessageBox.confirm("Are you sure you want to delete this evaluation?", {
-            confirmButtonText: "Confirm",
-            cancelButtonText: "Cancel",
+        await ElMessageBox.confirm($t("confirm_delete_evaluation"), {
+            confirmButtonText: $t("confirm"),
+            cancelButtonText: $t("cancel"),
             type: "warning",
             center: true,
             buttonSize: "large",
@@ -429,13 +430,11 @@ const deleteItem = async (id) => {
 
             //Mostro msg de sucesso da eliminacao
             ElNotification({
-                title: "Success",
-                message: "Evaluation deleted successfully",
+                title: $t('success'),
+                message: $t("success_deleting_evaluation"),
                 type: "success",
                 duration: 1400,
             });
-        } else {
-            console.log("Error deleting evaluation");
         }
     } catch (error) {
         if (error === "cancel" || error === "close") {
@@ -444,7 +443,7 @@ const deleteItem = async (id) => {
         console.error("Error", error);
         ElNotification({
             title: "Error",
-            message: error.response?.data?.message || "Failed to delete the Evaluation.",
+            message: error.response?.data?.message || $t("error_deleting_evaluation"),
             type: "error",
             duration: 2000,
         });

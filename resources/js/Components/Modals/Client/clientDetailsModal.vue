@@ -21,7 +21,7 @@
             <div>
                 <div class="label px-4 py-2 flex items-center gap-2">
                     <img :src="rullerIcon" alt="icon" class="w-4 h-4 filter brightness-0 invert" />
-                    <span>Height</span>
+                    <span>{{ $t('height') }}</span>
                 </div>
                 <div class="bg-gray-100 px-4 py-2">{{ data.height + " cm" || "—" }}</div>
             </div>
@@ -39,7 +39,7 @@
             <div>
                 <div class="label px-4 py-2 flex items-center gap-2">
                     <img :src="phoneIcon" alt="icon" class="w-4 h-4 filter brightness-0 invert" />
-                    <span>Phone Number</span>
+                    <span>{{ $t('phone_number') }}</span>
                 </div>
                 <div class="bg-gray-100 px-4 py-2">{{ data.phone_number || "—" }}</div>
             </div>
@@ -48,7 +48,7 @@
             <div>
                 <div class="label px-4 py-2 flex items-center gap-2">
                     <img :src="locationIcon" alt="icon" class="w-4 h-4 filter brightness-0 invert" />
-                    <span>Address</span>
+                    <span>{{ $t('address') }}</span>
                 </div>
                 <div class="bg-gray-100 px-4 py-2">{{ data.address || "—" }}</div>
             </div>
@@ -66,7 +66,7 @@
             <div>
                 <div class="label px-4 py-2 flex items-center gap-2">
                     <img :src="birthDateIcon" alt="icon" class="w-4 h-4 filter brightness-0 invert" />
-                    <span>Birth Date</span>
+                    <span>{{ $t('birth_date') }}</span>
                 </div>
                 <div class="bg-gray-100 px-4 py-2">{{ data.birth_date || "—" }}</div>
             </div>
@@ -75,7 +75,7 @@
             <div class="col-span-1 md:col-span-2">
                 <div class="label px-4 py-2 flex items-center gap-2">
                     <img :src="reportIcon" alt="icon" class="w-4 h-4 filter brightness-0 invert" />
-                    <span>Description</span>
+                    <span>{{ $t('description') }}</span>
                 </div>
                 <div class="bg-gray-100 px-4 py-2">{{ data.description || "—" }}</div>
             </div>
@@ -84,7 +84,7 @@
             <div class="col-span-1 md:col-span-2">
                 <div class="label px-4 py-2 flex items-center gap-2">
                     <img :src="attachmentIcon" alt="icon" class="w-4 h-4 filter brightness-0 invert" />
-                    <span>Attachments</span>
+                    <span>{{ $t('attachments') }}</span>
                 </div>
                 <div class="bg-gray-100 px-4 py-2">
                     <div v-if="data.attachments?.length">

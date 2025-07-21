@@ -7,7 +7,7 @@
                     {{ editMode ? "edit_square" : "add_box" }}
                 </span>
                 <h2 class="text-2xl font-semibold text-gray-800">
-                    {{ editMode ? "Edit Evaluation" : "Create Evaluation" }}
+                    {{ editMode ? $t('edit_evaluation') : $t('create_evaluation') }}
                 </h2>
             </div>
         </template>
@@ -19,13 +19,13 @@
                 <template #label>
                     <div class="flex items-center space-x-1">
                         <img :src="calendarIcon" alt="icon" class="w-4 h-4" />
-                        <span>Date</span>
+                        <span>{{ $t('date') }}</span>
                     </div>
                 </template>
                 <el-date-picker
                     v-model="form.date"
                     type="datetime"
-                    placeholder="Pick date and time"
+                    :placeholder="$t('pick_datetime')"
                     format="DD-MM-YYYY HH:mm"
                     value-format="YYYY-MM-DD HH:mm:ss"
                 />
@@ -36,10 +36,10 @@
                 <template #label>
                     <div class="flex items-center space-x-1">
                         <img :src="clientIcon" alt="icon" class="w-4 h-4 filter brightness-1 invert" />
-                        <span>Client</span>
+                        <span>{{ $t('client') }}</span>
                     </div>
                 </template>
-                <el-select v-model="form.client_id" placeholder="Choose Client" clearable filterable>
+                <el-select v-model="form.client_id" :placeholder="$t('choose_client')" clearable filterable>
                     <el-option v-for="item in clientsList" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
             </el-form-item>
@@ -49,7 +49,7 @@
                 <template #label>
                     <div class="flex items-center space-x-1">
                         <img :src="scaleIcon" alt="icon" class="w-4 h-4 filter brightness-1 invert" />
-                        <span>Weight</span>
+                        <span>{{ $t('weight') }}</span>
                     </div>
                 </template>
                 <el-input v-model.number="form.weight" type="number" step="0.1" min="0" placeholder="0">
@@ -75,7 +75,7 @@
                 <template #label>
                     <div class="flex items-center space-x-1">
                         <img :src="muscleMassIcon" alt="icon" class="w-4 h-4 filter brightness-1 invert" />
-                        <span>Muscle Mass</span>
+                        <span>{{ $t('muscle_mass') }}</span>
                     </div>
                 </template>
                 <el-input v-model.number="form.muscle_mass" type="number" step="0.01" min="0" placeholder="0">
@@ -90,7 +90,7 @@
                 <template #label>
                     <div class="flex items-center space-x-1">
                         <img :src="boneIcon" alt="icon" class="w-4 h-4 filter brightness-1 invert" />
-                        <span>Bone Mass</span>
+                        <span>{{ $t('bone_mass') }}</span>
                     </div>
                 </template>
                 <el-input v-model.number="form.bone_mass" type="number" step="0.01" min="0" placeholder="0">
@@ -105,7 +105,7 @@
                 <template #label>
                     <div class="flex items-center space-x-1">
                         <img :src="bodyFatIcon" alt="icon" class="w-4 h-4 filter brightness-1 invert" />
-                        <span>Body Fat</span>
+                        <span>{{ $t('body_fat') }}</span>
                     </div>
                 </template>
                 <el-input v-model.number="form.body_fat" type="number" step="0.01" min="0" placeholder="0">
@@ -120,7 +120,7 @@
                 <template #label>
                     <div class="flex items-center space-x-1">
                         <img :src="waterDropIcon" alt="icon" class="w-4 h-4 filter brightness-1 invert" />
-                        <span>Body Water</span>
+                        <span>{{ $t('body_water') }}</span>
                     </div>
                 </template>
                 <el-input v-model.number="form.body_water" type="number" step="0.01" min="0" placeholder="0">
@@ -135,7 +135,7 @@
                 <template #label>
                     <div class="flex items-center space-x-1">
                         <img :src="visceralFatIcon" alt="icon" class="w-4 h-4 filter brightness-1 invert" />
-                        <span>Visceral Fat</span>
+                        <span>{{ $t('visceral_fat') }}</span>
                     </div>
                 </template>
                 <el-input v-model.number="form.visceral_fat" type="number" step="1" min="0" placeholder="0" />
@@ -161,7 +161,7 @@
                 <template #label>
                     <div class="flex items-center space-x-1">
                         <img :src="reportIcon" alt="icon" class="w-4 h-4" />
-                        <span>Description</span>
+                        <span>{{ $t('description') }}</span>
                     </div>
                 </template>
                 <el-input
@@ -169,7 +169,7 @@
                     type="textarea"
                     :rows="3"
                     v-model="form.description"
-                    placeholder="Write here..."
+                    :placeholder="$t('write_here')"
                 />
             </el-form-item>
 
@@ -178,7 +178,7 @@
                 <template #label>
                     <div class="flex items-center space-x-1">
                         <img :src="attachmentIcon" alt="icon" class="w-4 h-4" />
-                        <span>Attachments</span>
+                        <span>{{ $t('attachments') }}</span>
                     </div>
                 </template>
                 <files-upload ref="filesUploadRef"></files-upload>
@@ -194,7 +194,7 @@
                 class="w-full text-white save-button"
                 @click="submitUpdate"
             >
-                {{ editMode ? "SAVE CHANGES" : "CREATE EVALUATION" }}
+                {{ editMode ? $t('save_changes') : $t('create_evaluation') }}
             </el-button>
         </template>
     </el-dialog>
@@ -237,6 +237,7 @@ const emit = defineEmits(["update:visible", "update"]);
 
 // Ref - define uma variavel para uso geral no componente
 // Variaveis Reativas
+const $t = (key) => window.translations?.[key] || key;
 const formRef = ref(null);
 const filesUploadRef = ref(null);
 const isLoading = ref(false);
@@ -370,7 +371,7 @@ const submitUpdate = async () => {
 
             if (response.data.success) {
                 ElNotification({
-                    title: "Success",
+                    title: $t('success'),
                     type: "success",
                     duration: 1400,
                 });

@@ -54,20 +54,21 @@ const props = defineProps({
     evaluations: Array,
 });
 
+const $t = (key) => window.translations?.[key] || key;
 const selectedMetric = ref("weight");
 const rowData = ref(null);
 const showDetailsModal = ref(false);
 
 // Indicadores para o select
 const indicators = {
-    weight: "Weight (kg)",
+    weight: $t('weight') + " (kg)",
     imc: "IMC",
-    muscle_mass: "Muscle Mass (kg)",
-    bone_mass: "Bone Mass (kg)",
+    muscle_mass: $t('muscle_mass') + " (kg)",
+    bone_mass: $t('bone_mass') + " (kg)",
     bmr: "BMR",
-    visceral_fat: "Visceral Fat",
-    body_fat: "Body Fat (%)",
-    body_water: "Body Water (%)",
+    visceral_fat: $t('visceral_fat'),
+    body_fat: $t('body_fat') + " (%)",
+    body_water: $t('body_water') + " (%)",
 };
 
 const chartData = computed(() => {

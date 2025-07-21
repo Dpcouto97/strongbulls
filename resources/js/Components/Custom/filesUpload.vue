@@ -33,6 +33,7 @@ defineOptions({
     name: "filesUpload",
 });
 
+const $t = (key) => window.translations?.[key] || key;
 const filesList = ref([]); // Lista que alimenta por default a preview list do el-upload
 const filesUploaded = ref([]); // Lista de ficheiros adicionados
 const filesDeleted = ref([]); // Lista de ficheiros removidos e que ja existiam no servidor
@@ -78,7 +79,7 @@ const handleRemoveFile = (file, uploadFiles) => {
 
 const beforeRemove = (uploadFile, uploadFiles) => {
     // Confirmacao acerca da remocao de um ficheiro, para evitar remoção não intencional.
-    return ElMessageBox.confirm(`Are you sure you want to delete<br><u>${uploadFile.name}</u>?`, {
+    return ElMessageBox.confirm(`${$t('confirm_delete_attachment')}<br><u>${uploadFile.name}</u>?`, {
         confirmButtonText: "Confirm",
         cancelButtonText: "Cancel",
         center: true,

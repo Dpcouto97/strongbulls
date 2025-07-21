@@ -95,23 +95,23 @@ const logout = () => {
 
                                     <template #content>
                                         <DropdownLink v-if="canAccess('client', 'list')" :href="route('clients')" :active="route().current('clients')">
-                                            Clientes
+                                            {{ $t('clients')}}
                                         </DropdownLink>
                                         <DropdownLink v-if="canAccess('evaluation', 'list')" :href="route('evaluations')" :active="route().current('evaluations')">
-                                            Avaliações
+                                            {{ $t('evaluations')}}
                                         </DropdownLink>
                                         <DropdownLink v-if="canAccess('plan', 'list')" :href="route('plans')" :active="route().current('plans')">
-                                            Planos
+                                            {{ $t('plans')}}
                                         </DropdownLink>
                                         <DropdownLink v-if="canAccess('exercise', 'list')" :href="route('clients')" :active="route().current('clients')">
-                                            Exercicios
+                                            {{ $t('exercises')}}
                                         </DropdownLink>
                                         <DropdownLink
                                             v-if="canAccess('category', 'list')"
                                             :href="route('categories')"
                                             :active="route().current('categories')"
                                         >
-                                            Agendamentos
+                                            {{ $t('appointments')}}
                                         </DropdownLink>
                                     </template>
                                 </Dropdown>
@@ -160,11 +160,11 @@ const logout = () => {
 
                                         <template #content>
                                             <!-- Account Management - DROPDOWN COM NOME DO USER, PROFILE E LOG OUT -->
-                                            <div class="block px-4 py-2 text-xs text-gray-400">Manage Account</div>
+                                            <div class="block px-4 py-2 text-xs text-gray-400">{{ $t('manage_account')}}</div>
 
-                                            <DropdownLink :href="route('profile.show')">Profile</DropdownLink>
-                                            <DropdownLink v-if="user.is_admin || canAccess('user', 'list')" :href="route('users')">Users</DropdownLink>
-                                            <DropdownLink v-if="user.is_admin" :href="route('user_groups')">User Groups</DropdownLink>
+                                            <DropdownLink :href="route('profile.show')">{{ $t('profile')}}</DropdownLink>
+                                            <DropdownLink v-if="user.is_admin || canAccess('user', 'list')" :href="route('users')">{{ $t('users')}}</DropdownLink>
+                                            <DropdownLink v-if="user.is_admin" :href="route('user_groups')">{{ $t('user_groups')}}</DropdownLink>
 
                                             <DropdownLink
                                                 v-if="$page.props.jetstream.hasApiFeatures"
@@ -177,7 +177,7 @@ const logout = () => {
 
                                             <!-- Authentication -->
                                             <form @submit.prevent="logout">
-                                                <DropdownLink as="button">Log Out</DropdownLink>
+                                                <DropdownLink as="button">{{ $t('logout')}}</DropdownLink>
                                             </form>
                                         </template>
                                     </Dropdown>
@@ -190,7 +190,7 @@ const logout = () => {
                                     :href="route('login')"
                                     class="group relative inline-block px-1 pb-1 text-sm uppercase tracking-wide text-black transition duration-150 hover:text-gray-700"
                                 >
-                                    LOG IN
+                                    {{ $t('login')}}
                                     <span
                                         class="absolute left-0 bottom-0 h-0.5 w-full bg-current scale-x-0 group-hover:scale-x-100 transition-transform origin-left"
                                     />

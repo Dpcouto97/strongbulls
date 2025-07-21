@@ -7,7 +7,7 @@
                     {{ editMode ? "edit_square" : "add_box" }}
                 </span>
                 <h2 class="text-2xl font-semibold text-gray-800">
-                    {{ editMode ? "Edit Plan" : "Create Plan" }}
+                    {{ editMode ? $t('edit_plan') : $t('create_plan') }}
                 </h2>
             </div>
         </template>
@@ -19,10 +19,10 @@
                 <template #label>
                     <div class="flex items-center space-x-1">
                         <span class="material-symbols-outlined">flowsheet</span>
-                        <span>Name</span>
+                        <span>{{ $t('name') }}</span>
                     </div>
                 </template>
-                <el-input v-model="form.name" placeholder="Write here..." />
+                <el-input v-model="form.name" :placeholder="$t('write_here')" />
             </el-form-item>
 
             <!-- Clientes -->
@@ -30,10 +30,10 @@
                 <template #label>
                     <div class="flex items-center space-x-1">
                         <img :src="clientIcon" alt="icon" class="w-4 h-4 filter brightness-1 invert" />
-                        <span>Client</span>
+                        <span>{{ $t('client') }}</span>
                     </div>
                 </template>
-                <el-select v-model="form.clients" placeholder="Choose Clients" clearable filterable multiple>
+                <el-select v-model="form.clients" :placeholder="$t('choose_clients')" clearable filterable multiple>
                     <el-option v-for="item in clientsList" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
             </el-form-item>
@@ -43,10 +43,10 @@
                 <template #label>
                     <div class="flex items-center space-x-1">
                         <img :src="typeIcon" alt="icon" class="w-4 h-4 filter brightness-1 invert" />
-                        <span>Type</span>
+                        <span>{{ $t('type') }}</span>
                     </div>
                 </template>
-                <el-input v-model="form.type" placeholder="Write here..." />
+                <el-input v-model="form.type" :placeholder="$t('write_here')" />
             </el-form-item>
 
             <!-- Description -->
@@ -54,7 +54,7 @@
                 <template #label>
                     <div class="flex items-center space-x-1">
                         <img :src="reportIcon" alt="icon" class="w-4 h-4" />
-                        <span>Description</span>
+                        <span>{{ $t('description') }}</span>
                     </div>
                 </template>
                 <el-input
@@ -62,7 +62,7 @@
                     type="textarea"
                     :rows="3"
                     v-model="form.description"
-                    placeholder="Write here..."
+                    :placeholder="$t('write_here')"
                 />
             </el-form-item>
         </el-form>
@@ -76,7 +76,7 @@
                 class="w-full text-white save-button"
                 @click="submitUpdate"
             >
-                {{ editMode ? "SAVE CHANGES" : "CREATE PLAN" }}
+                {{ editMode ? $t('save_changes') : $t('create_plan') }}
             </el-button>
         </template>
     </el-dialog>
@@ -163,7 +163,7 @@ const submitUpdate = async () => {
 
             if (response.data.success) {
                 ElNotification({
-                    title: "Success",
+                    title: $t('success'),
                     type: "success",
                     duration: 1400,
                 });

@@ -15,7 +15,7 @@
                                 <!-- SEARCH BAR -->
                                 <el-input
                                     style="width: 280px"
-                                    placeholder="Search..."
+                                    :placeholder="$t('search')"
                                     v-model="searchFilter"
                                     search
                                     clearable
@@ -25,7 +25,7 @@
                                 <!-- Client Filter -->
                                 <el-select
                                     v-model="clientFilter"
-                                    placeholder="Clients"
+                                    :placeholder="$t('clients')"
                                     style="width: 240px"
                                     multiple
                                     :collapse-tags="clientFilter.length > 1"
@@ -75,7 +75,7 @@
                                         <button
                                             class="icon-button add-button ml-4"
                                             @click="addItem"
-                                            title="Add new Plan"
+                                            :title="$t('add_new')"
                                         >
                                             <span class="material-symbols-outlined">add_box</span>
                                         </button>
@@ -87,7 +87,7 @@
                                             v-if="row.can_edit"
                                             class="icon-button edit-button"
                                             @click="editItem(row)"
-                                            title="Edit"
+                                            :title="$t('edit')"
                                         >
                                             <span class="material-symbols-outlined">edit_square</span>
                                         </button>
@@ -95,7 +95,7 @@
                                             v-if="row.can_delete"
                                             class="icon-button delete-button"
                                             @click="deleteItem(row.id)"
-                                            title="Delete"
+                                            :title="$t('delete')"
                                         >
                                             <span class="material-symbols-outlined">delete</span>
                                         </button>
@@ -103,7 +103,7 @@
                                             v-if="row.can_details"
                                             class="icon-button details-button"
                                             @click="detailItem(row)"
-                                            title="Details"
+                                            :title="$t('details')"
                                         >
                                             <span class="material-symbols-outlined">info</span>
                                         </button>
@@ -168,6 +168,7 @@ onMounted(() => {
 });
 
 // Variaveis Reactivas - Acedidas em JS atraves de 'variavel.value'
+const $t = (key) => window.translations?.[key] || key;
 const showModal = ref(false);
 const showDetailsModal = ref(false);
 const editMode = ref(false);
@@ -187,13 +188,13 @@ const sortOrder = ref(null);
 //Variaveis Nao Reactivas nao precisam de 'ref', pois nao sao alteradas.
 const tableColumns = [
     {
-        label: "Name",
+        label: $t('name'),
         property: "name",
         icon: "flowsheet",
         sortable: true,
     },
     {
-        label: "Type",
+        label: $t('type'),
         property: "type",
         icon: "merge_type",
     },
@@ -275,9 +276,9 @@ const detailItem = (row) => {
 const deleteItem = async (id) => {
     try {
         // Mostramos caixa de confirmacao para nao eliminar de forma inesperada.
-        await ElMessageBox.confirm("Are you sure you want to delete this Plan?", {
-            confirmButtonText: "Confirm",
-            cancelButtonText: "Cancel",
+        await ElMessageBox.confirm($t("confirm_delete_plan"), {
+            confirmButtonText: $t("confirm"),
+            cancelButtonText: $t("cancel"),
             type: "warning",
             center: true,
             buttonSize: "large",
@@ -293,13 +294,11 @@ const deleteItem = async (id) => {
 
             //Mostro msg de sucesso da eliminacao
             ElNotification({
-                title: "Success",
-                message: "Plan deleted successfully",
+                title: $t('success'),
+                message: $t("success_deleting_plan"),
                 type: "success",
                 duration: 1400,
             });
-        } else {
-            console.log("Error deleting plan");
         }
     } catch (error) {
         if (error === "cancel" || error === "close") {
@@ -308,7 +307,7 @@ const deleteItem = async (id) => {
         console.error("Error", error);
         ElNotification({
             title: "Error",
-            message: error.response?.data?.message || "Failed to delete the Plan.",
+            message: error.response?.data?.message || $t("error_deleting_evaluation"),
             type: "error",
             duration: 2000,
         });
