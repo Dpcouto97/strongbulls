@@ -71,7 +71,7 @@
                 <template #label>
                     <div class="flex items-center space-x-1">
                         <img :src="attachmentIcon" alt="icon" class="w-4 h-4" />
-                        <span>{{ $t('attachments') }}</span>
+                        <span>{{ $t('attachment') }}</span>
                     </div>
                 </template>
                 <files-upload ref="filesUploadRef" :single-file="true"></files-upload>

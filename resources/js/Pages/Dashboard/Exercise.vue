@@ -22,6 +22,23 @@
                                     @change="getTableData"
                                     class="white-bg-input"
                                 />
+                                <!-- Filtro Grupo Muscular -->
+                                <el-select
+                                    v-model="muscleGroupFilter"
+                                    multiple
+                                    clearable
+                                    :collapse-tags="muscleGroupFilter.length > 2"
+                                    :placeholder="$t('select_muscle_group')"
+                                    @change="getTableData"
+                                    style="width: 350px"
+                                >
+                                    <el-option
+                                        v-for="item in muscleGroups"
+                                        :key="item.value"
+                                        :label="item.label"
+                                        :value="item.value"
+                                    />
+                                </el-select>
                             </div>
                         </div>
                     </div>
@@ -109,17 +126,21 @@
                         />
                     </div>
 
-                    <!-- Modal de criacao/Edicao de Plano -->
+                    <!-- Modal de criacao/Edicao de Exercicio -->
                     <exercise-modal
-                        ref="plan"
+                        ref="exercise"
                         v-model:visible="showModal"
                         :edit-mode="editMode"
                         :row="rowData"
                         @update="getTableData"
                     />
 
-                    <!-- Modal Detalhes do Plano -->
-<!--                    <plan-details-modal ref="planDetails" v-model:visible="showDetailsModal" :data="rowData" :clients-list="clientsList" />-->
+                    <!-- Modal Detalhes do Exercicio -->
+                    <exercise-details-modal
+                        ref="exerciseDetails"
+                        v-model:visible="showDetailsModal"
+                        :data="rowData"
+                    />
                 </div>
             </div>
         </div>
@@ -129,7 +150,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import ExerciseModal from "@/Components/Modals/Exercise/exerciseModal.vue";
-import PlanDetailsModal from "@/Components/Modals/Plan/planDetailsModal.vue";
+import exerciseDetailsModal from "@/Components/Modals/Exercise/exerciseDetailsModal.vue";
 import axios from "axios";
 import { ElNotification } from "element-plus";
 import { ElMessageBox } from "element-plus";
@@ -155,7 +176,8 @@ const editMode = ref(false);
 const rowData = ref(null);
 const isLoading = ref(false);
 const tableData = ref([]);
-const searchFilter = ref([]);
+const searchFilter = ref(null);
+const muscleGroupFilter = ref([]);
 const pageSize = ref(10);
 const currentPage = ref(1);
 const totalItems = ref(0);
@@ -166,22 +188,42 @@ const sortOrder = ref(null);
 //Variaveis Nao Reactivas nao precisam de 'ref', pois nao sao alteradas.
 const tableColumns = [
     {
-        label: $t('name'),
+        label: $t("name"),
         property: "name",
         icon: "fitness_center",
         sortable: true,
     },
     {
-        label: $t('muscle_group'),
+        label: $t("muscle_group"),
         property: "muscle_group",
         icon: "bia",
+        formatter: (row) => {
+            return muscleGroups.find((g) => g.value === row.muscle_group)?.label;
+        },
     },
 ];
+
+// Lista fixa de grupos musculares
+const muscleGroups = [
+    { label: $t("chest"), value: "chest" },
+    { label: $t("back"), value: "back" },
+    { label: $t("shoulders"), value: "shoulders" },
+    { label: $t("biceps"), value: "biceps" },
+    { label: $t("triceps"), value: "triceps" },
+    { label: $t("trapezius"), value: "trapezius" },
+    { label: $t("quadriceps"), value: "quadriceps" },
+    { label: $t("hamstrings"), value: "hamstrings" },
+    { label: $t("glutes"), value: "glutes" },
+    { label: $t("calves"), value: "calves" },
+    { label: $t("core"), value: "core" },
+];
+
 // Metodos
 const getTableData = async () => {
     //Busca a lista de Items da tabela da BD.
     let filters = {
         searchFilter: searchFilter.value,
+        muscleGroupFilter: muscleGroupFilter.value || undefined,
         page: currentPage.value,
         pageSize: pageSize.value,
         sortBy: sortColumn.value,
@@ -250,7 +292,7 @@ const deleteItem = async (id) => {
 
             //Mostro msg de sucesso da eliminacao
             ElNotification({
-                title: $t('success'),
+                title: $t("success"),
                 message: $t("success_deleting_exercise"),
                 type: "success",
                 duration: 1400,

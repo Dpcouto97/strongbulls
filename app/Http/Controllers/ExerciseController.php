@@ -35,12 +35,16 @@ class ExerciseController extends Controller
 
             // Filtros
             $searchFilter = $request['searchFilter'];
+            $muscleGroupFilter = $request['muscleGroupFilter'];
             $pageSize = $request['pageSize'];
             $sortBy = $request->input('sortBy', 'name'); // default 'date'
             $sortOrder = $request->input('sortOrder', 'asc'); // default' desc'
 
             if (!empty($searchFilter)) {
                 $query->where('name', 'like', '%' . $searchFilter . '%');
+            }
+            if (!empty($muscleGroupFilter) && is_array($muscleGroupFilter)) {
+                $query->whereIn('muscle_group', $muscleGroupFilter);
             }
 
             // Validação segura do sortBy e sortOrder

@@ -27,6 +27,7 @@
     "birth_date": "Birth Date",
     "description": "Description",
     "attachments": "Attachments",
+    "attachment": "Attachment",
     "create_client": "CREATE CLIENT",
     "create_plan": "CREATE PLAN",
     "create_exercise": "CREATE EXERCISE",
