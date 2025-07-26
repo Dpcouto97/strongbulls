@@ -1,12 +1,12 @@
 <template>
-    <AppLayout title="Plan">
+    <AppLayout title="Exercise">
         <div class="py-6">
             <div class="max-w-7xl mx-auto sm:px-4 lg:px-8">
                 <div class="main-content">
                     <!-- Container com ICON + TITULO-->
                     <div class="title-container flex items-center space-x-2">
-                        <span class="material-symbols-outlined" style="color: #1d3a32">flowsheet</span>
-                        <h1 class="title" style="color: #1d3a32">{{ $t("plan") }}</h1>
+                        <span class="material-symbols-outlined" style="color: #1d3a32">fitness_center</span>
+                        <h1 class="title" style="color: #1d3a32">{{ $t("exercise") }}</h1>
                     </div>
                     <div class="filter-controls mb-3">
                         <div class="left-filter-container">
@@ -22,24 +22,6 @@
                                     @change="getTableData"
                                     class="white-bg-input"
                                 />
-                                <!-- Client Filter -->
-                                <el-select
-                                    v-model="clientFilter"
-                                    :placeholder="$t('clients')"
-                                    style="width: 240px"
-                                    multiple
-                                    :collapse-tags="clientFilter.length > 1"
-                                    clearable
-                                    filterable
-                                    @change="getTableData"
-                                >
-                                    <el-option
-                                        v-for="item in clientsList"
-                                        :key="item.id"
-                                        :label="item.name"
-                                        :value="item.id"
-                                    />
-                                </el-select>
                             </div>
                         </div>
                     </div>
@@ -128,17 +110,16 @@
                     </div>
 
                     <!-- Modal de criacao/Edicao de Plano -->
-                    <plan-modal
+                    <exercise-modal
                         ref="plan"
                         v-model:visible="showModal"
                         :edit-mode="editMode"
                         :row="rowData"
-                        :clients-list="clientsList"
                         @update="getTableData"
                     />
 
                     <!-- Modal Detalhes do Plano -->
-                    <plan-details-modal ref="planDetails" v-model:visible="showDetailsModal" :data="rowData" :clients-list="clientsList" />
+<!--                    <plan-details-modal ref="planDetails" v-model:visible="showDetailsModal" :data="rowData" :clients-list="clientsList" />-->
                 </div>
             </div>
         </div>
@@ -146,8 +127,8 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from "vue";
-import PlanModal from "@/Components/Modals/Plan/planModal.vue";
+import { ref, onMounted } from "vue";
+import ExerciseModal from "@/Components/Modals/Exercise/exerciseModal.vue";
 import PlanDetailsModal from "@/Components/Modals/Plan/planDetailsModal.vue";
 import axios from "axios";
 import { ElNotification } from "element-plus";
@@ -158,13 +139,12 @@ import AppLayout from "@/Layouts/AppLayout.vue";
 
 //Define o nome dado ao ficheiro
 defineOptions({
-    name: "Plan",
+    name: "Exercise",
 });
 
 //LifeCycle OnMounted
 onMounted(() => {
     getTableData();
-    getClientsList();
 });
 
 // Variaveis Reactivas - Acedidas em JS atraves de 'variavel.value'
@@ -175,9 +155,7 @@ const editMode = ref(false);
 const rowData = ref(null);
 const isLoading = ref(false);
 const tableData = ref([]);
-const clientFilter = ref([]);
 const searchFilter = ref([]);
-const clientsList = ref([]);
 const pageSize = ref(10);
 const currentPage = ref(1);
 const totalItems = ref(0);
@@ -190,20 +168,19 @@ const tableColumns = [
     {
         label: $t('name'),
         property: "name",
-        icon: "flowsheet",
+        icon: "fitness_center",
         sortable: true,
     },
     {
-        label: $t('type'),
-        property: "type",
-        icon: "merge_type",
+        label: $t('muscle_group'),
+        property: "muscle_group",
+        icon: "bia",
     },
 ];
 // Metodos
 const getTableData = async () => {
     //Busca a lista de Items da tabela da BD.
     let filters = {
-        clientFilter: clientFilter.value,
         searchFilter: searchFilter.value,
         page: currentPage.value,
         pageSize: pageSize.value,
@@ -214,7 +191,7 @@ const getTableData = async () => {
     try {
         isLoading.value = true;
         //Chamada GET API
-        const response = await axios.get("/api/plans", { params: filters });
+        const response = await axios.get("/api/exercises", { params: filters });
 
         if (response.data.success) {
             tableData.value = response.data.data.list.data;
@@ -230,27 +207,6 @@ const getTableData = async () => {
         });
     } finally {
         isLoading.value = false;
-    }
-};
-
-const getClientsList = async () => {
-    //Busca a lista de Clients da tabela da BD.
-    try {
-        const response = await axios.get("/api/clients", {
-            params: {
-                byPassPermission: true,
-            },
-        });
-
-        if (response.data.success) {
-            clientsList.value = response.data.data.list;
-        }
-    } catch (error) {
-        ElNotification({
-            title: `Error - ${error.response.data.message}`,
-            type: "error",
-            duration: 1400,
-        });
     }
 };
 
@@ -276,7 +232,7 @@ const detailItem = (row) => {
 const deleteItem = async (id) => {
     try {
         // Mostramos caixa de confirmacao para nao eliminar de forma inesperada.
-        await ElMessageBox.confirm($t("confirm_delete_plan"), {
+        await ElMessageBox.confirm($t("confirm_delete_exercise"), {
             confirmButtonText: $t("confirm"),
             cancelButtonText: $t("cancel"),
             type: "warning",
@@ -286,16 +242,16 @@ const deleteItem = async (id) => {
         });
 
         // Chamo o metodo para eliminar o item
-        const response = await axios.delete(`/api/plans/${id}`);
+        const response = await axios.delete(`/api/exercises/${id}`);
 
         if (response.data.success) {
             // Atualizo a tabela apos eliminar o item desejado
-            getTableData();
+            await getTableData();
 
             //Mostro msg de sucesso da eliminacao
             ElNotification({
                 title: $t('success'),
-                message: $t("success_deleting_plan"),
+                message: $t("success_deleting_exercise"),
                 type: "success",
                 duration: 1400,
             });
@@ -307,7 +263,7 @@ const deleteItem = async (id) => {
         console.error("Error", error);
         ElNotification({
             title: "Error",
-            message: error.response?.data?.message || $t("error_deleting_plan"),
+            message: error.response?.data?.message || $t("error_deleting_exercise"),
             type: "error",
             duration: 2000,
         });

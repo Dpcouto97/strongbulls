@@ -97,5 +97,18 @@
     "logout": "Log Out",
     "login": "Log In",
     "forgot_password": "Forgot your password?",
-    "password": "PASSWORD"
+    "password": "PASSWORD",
+    "muscle_group": "Muscle Group",
+    "select_muscle_group": "Select Muscle Group",
+    "chest": "Chest",
+    "back": "Back",
+    "shoulders": "Shoulders",
+    "biceps": "Biceps",
+    "triceps": "Triceps",
+    "trapezius": "Trapezius",
+    "quadriceps": "Quadriceps",
+    "hamstrings": "Hamstrings",
+    "glutes": "Glutes",
+    "calves": "Calves",
+    "core": "Core (Abs and Lower Back)"
 }

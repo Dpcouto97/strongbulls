@@ -33,6 +33,13 @@ defineOptions({
     name: "filesUpload",
 });
 
+const props = defineProps({
+    singleFile: {
+        type: Boolean,
+        default: false
+    }
+});
+
 const $t = (key) => window.translations?.[key] || key;
 const filesList = ref([]); // Lista que alimenta por default a preview list do el-upload
 const filesUploaded = ref([]); // Lista de ficheiros adicionados

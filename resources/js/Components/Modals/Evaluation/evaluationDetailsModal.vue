@@ -459,12 +459,35 @@ const getDifference = (newValue, oldValue) => {
 };
 
 const downloadAttachment = (file) => {
-    // Download do ficheiro
-    const link = document.createElement("a");
-    link.href = file.url;
-    link.download = file.name || "attachment";
-    link.click();
+    // If file.url is a Blob URL (from local upload)
+    if (file.raw && file.url?.startsWith("blob:")) {
+        const blob = file.raw;
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = file.name || "attachment";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url); // Clean up
+    }
+    // If file.url is from server (http/https)
+    else if (file.url?.startsWith("http") || file.url?.startsWith("/")) {
+        const link = document.createElement("a");
+        link.href = file.url;
+        link.download = file.name || "attachment";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    } else {
+        ElNotification({
+            title: "Error",
+            message: "File not available for download.",
+            type: "error",
+        });
+    }
 };
+
 </script>
 
 <style>

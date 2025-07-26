@@ -97,5 +97,18 @@
     "logout": "Terminar Sessão",
     "login": "Iniciar Sessão",
     "forgot_password": "Esqueceu a palavra-passe?",
-    "password": "PALAVRA-PASSE"
+    "password": "PALAVRA-PASSE",
+    "muscle_group": "Grupo Muscular",
+    "select_muscle_group": "Selecionar Grupo Muscular",
+    "chest": "Peitoral",
+    "back": "Costas",
+    "shoulders": "Ombros",
+    "biceps": "Bíceps",
+    "triceps": "Tríceps",
+    "trapezius": "Trapézio",
+    "quadriceps": "Quadríceps",
+    "hamstrings": "Posteriores da coxa",
+    "glutes": "Glúteos",
+    "calves": "Panturrilhas",
+    "core": "Core (Abdómen e Lombar)"
 }

@@ -33,10 +33,10 @@ Route::middleware([
         return Inertia::render('Dashboard/Plan');
     })->middleware('check.permission:plan,list')->name('plans');
 
-    //Rota para a página location quando acedo a '/locations'
-    Route::get('/locations', function () {
-        return Inertia::render('Location');
-    })->middleware('check.permission:location,list')->name('locations');
+    //Rota para a página Exercise quando acedo a '/exercises'
+    Route::get('/exercises', function () {
+        return Inertia::render('Dashboard/Exercise');
+    })->middleware('check.permission:exercise,list')->name('exercises');
 
     //Rota para a página category quando acedo a '/categories'
     Route::get('/categories', function () {

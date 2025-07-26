@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Core\BaseModel;
 use App\Models\Evaluation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
