@@ -5,20 +5,29 @@
             class="upload-image"
             v-model:file-list="filesList"
             action=""
-            multiple
+            :accept="singleFile ? 'image/jpeg,image/png,image/svg+xml' : ''"
+            :limit="singleFile ? 1 : undefined"
+            :multiple="!singleFile"
             :show-file-list="true"
             :on-remove="handleRemoveFile"
             :on-change="handleChangedFiles"
             :on-preview="handlePreview"
             :before-remove="beforeRemove"
             :auto-upload="false"
+            :list-type="singleFile ? 'picture-card' : 'text'"
         >
-            <div class="flex flex-row gap-2 items-center">
-                <div class="upload-container">
-                    <el-button>{{ $t('choose_files') }}</el-button>
+            <!-- IF singleFile and no image is selected -->
+            <template v-if="singleFile && filesList.length === 0">
+                <div class="flex flex-col items-center justify-center cursor-pointer">
+                    <el-icon><span class="material-symbols-outlined">upload</span></el-icon>
+                    <div class="mt-1 text-sm text-gray-500">{{ $t("choose_file") }}</div>
                 </div>
-                <div v-if="filesList.length < 1">{{ $t('no_file_choosen') }}</div>
-            </div>
+            </template>
+
+            <!-- IF multiple files allowed -->
+            <template v-else-if="!singleFile">
+                <el-button>{{ $t("choose_files") }}</el-button>
+            </template>
         </el-upload>
     </div>
 </template>
@@ -31,6 +40,13 @@ import "../../../css/notification.css";
 // Define o nome do ficheiro
 defineOptions({
     name: "filesUpload",
+});
+
+const props = defineProps({
+    singleFile: {
+        type: Boolean,
+        default: false,
+    },
 });
 
 const $t = (key) => window.translations?.[key] || key;
@@ -47,25 +63,34 @@ const setFiles = (files) => {
 };
 
 const handleChangedFiles = (file, uploadFiles) => {
-    // Tamanho maximo por ficheiro em MB
     const maxSizeInMB = 10;
+    const validMimeTypes = ["image/jpeg", "image/png", "image/svg+xml"];
 
-    // Removo ficheiros com mais 10MB
-    const validFiles = uploadFiles.filter((f) => f.size / 1024 / 1024 <= maxSizeInMB);
+    let validFiles = uploadFiles.filter((f) => {
+        const isSizeOk = f.size / 1024 / 1024 <= maxSizeInMB;
+        const isTypeOk = !props.singleFile || validMimeTypes.includes(f.raw?.type);
+        return isSizeOk && isTypeOk;
+    });
 
-    // Aviso o utilizador que alguns ficheiros ultrapassavam o tamanho maximo do ficheiro
+    if (props.singleFile && validFiles.length > 1) {
+        // If singleFile is true, only keep the last one
+        validFiles = [validFiles[validFiles.length - 1]];
+    }
+
     if (validFiles.length < uploadFiles.length) {
         ElNotification({
-            title: "Some files were removed because they exceed the 10MB limit.",
+            title: props.singleFile
+                ? "Only JPEG, PNG or SVG images under 10MB are allowed."
+                : "Some files were removed because they exceed the 10MB limit.",
             type: "warning",
             duration: 2300,
         });
     }
 
-    // Atualizo as listagens
-    filesUploaded.value = [...validFiles]; // Lista de ficheiros a enviar para a API
-    filesList.value = [...validFiles]; // Lista default do el-upload
+    filesUploaded.value = [...validFiles];
+    filesList.value = [...validFiles];
 };
+
 const handleRemoveFile = (file, uploadFiles) => {
     // Logica para remocao dos ficheiros ja existentes no servidor.
     if (file.url) {
@@ -79,7 +104,7 @@ const handleRemoveFile = (file, uploadFiles) => {
 
 const beforeRemove = (uploadFile, uploadFiles) => {
     // Confirmacao acerca da remocao de um ficheiro, para evitar remoção não intencional.
-    return ElMessageBox.confirm(`${$t('confirm_delete_attachment')}<br><u>${uploadFile.name}</u>?`, {
+    return ElMessageBox.confirm(`${$t("confirm_delete_attachment")}<br><u>${uploadFile.name}</u>?`, {
         confirmButtonText: "Confirm",
         cancelButtonText: "Cancel",
         center: true,

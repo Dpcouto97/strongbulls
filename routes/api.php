@@ -7,7 +7,7 @@ use App\Http\Controllers\EvaluationController;
 use App\Http\Controllers\PlanController;
 use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\ClientController;
-use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ExerciseController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\UserGroupController;
@@ -41,12 +41,12 @@ Route::middleware(['auth:sanctum'])->prefix('plans')->group(function () {
 });
 
 
-// Categories
-Route::middleware(['auth:sanctum'])->prefix('categories')->group(function () {
-    Route::get('/', [CategoryController::class, 'listCategories']);
-    Route::post('/', [CategoryController::class, 'insertCategory']);
-    Route::put('/{id}', [CategoryController::class, 'updateCategory']);
-    Route::delete('/{id}', [CategoryController::class, 'deleteCategory']);
+// Exercises
+Route::middleware(['auth:sanctum'])->prefix('exercises')->group(function () {
+    Route::get('/', [ExerciseController::class, 'listExercises']);
+    Route::post('/', [ExerciseController::class, 'insertExercise']);
+    Route::put('/{id}', [ExerciseController::class, 'updateExercise']);
+    Route::delete('/{id}', [ExerciseController::class, 'deleteExercise']);
 });
 
 // Locations

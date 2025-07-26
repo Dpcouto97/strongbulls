@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Client;
+use App\Models\Exercise;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -10,18 +10,18 @@ use App\Helpers\PermissionsHelper;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
-class ClientController extends Controller
+class ExerciseController extends Controller
 {
     public function __construct()
     {
         DB::setDefaultConnection('strong-bulls');
     }
 
-    public function listClients(Request $request): \Illuminate\Http\JsonResponse
+    public function listExercises(Request $request): \Illuminate\Http\JsonResponse
     {
         //Permissões
-        $user_can_list = PermissionsHelper::CAN_ACCESS('client', 'list');
-        $user_can_create = PermissionsHelper::CAN_ACCESS('client', 'create');
+        $user_can_list = PermissionsHelper::CAN_ACCESS('exercise', 'list');
+        $user_can_create = PermissionsHelper::CAN_ACCESS('exercise', 'create');
 
         // Verifico se devo ignorar a permissao pois o metodo está a devolver dados para uma listagem
         $bypassPermission = $request->boolean('byPassPermission');
@@ -31,16 +31,20 @@ class ClientController extends Controller
             $list = collect();
         } else {
             // Inicio da Query
-            $query = Client::query();
+            $query = Exercise::query();
 
             // Filtros
             $searchFilter = $request['searchFilter'];
+            $muscleGroupFilter = $request['muscleGroupFilter'];
             $pageSize = $request['pageSize'];
             $sortBy = $request->input('sortBy', 'name'); // default 'date'
             $sortOrder = $request->input('sortOrder', 'asc'); // default' desc'
 
             if (!empty($searchFilter)) {
                 $query->where('name', 'like', '%' . $searchFilter . '%');
+            }
+            if (!empty($muscleGroupFilter) && is_array($muscleGroupFilter)) {
+                $query->whereIn('muscle_group', $muscleGroupFilter);
             }
 
             // Validação segura do sortBy e sortOrder
@@ -59,10 +63,10 @@ class ClientController extends Controller
                 $list = $query->paginate($pageSize);
 
                 // Transformo apenas a collection, para preservar os dados sobre a paginacao.
-                $list->getCollection()->transform(fn($client) => $this->transformClientData($client));
+                $list->getCollection()->transform(fn($exercise) => $this->transformExerciseData($exercise));
             } else {
                 // Sem paginação
-                $list = $query->get()->map(fn($client) => $this->transformClientData($client));
+                $list = $query->get()->map(fn($exercise) => $this->transformExerciseData($exercise));
             }
         }
 
@@ -77,27 +81,22 @@ class ClientController extends Controller
         ]);
     }
 
-    public function insertClient(Request $request): \Illuminate\Http\JsonResponse
+    public function insertExercise(Request $request): \Illuminate\Http\JsonResponse
     {
         $user = auth()->user();
-        $user_can_create = PermissionsHelper::CAN_ACCESS('client', 'create');
+        $user_can_create = PermissionsHelper::CAN_ACCESS('exercise', 'create');
 
         // Valido a permissao sobre criar.
         if (!$user_can_create) {
             return response()->json([
                 'success' => false,
-                'message' => 'You do not have permission to create a client.'
+                'message' => 'You do not have permission to create a exercise.'
             ], 403); // 403 = Forbidden
         }
 
         $validated = $request->validate([
             'name' => 'required|string|max:100',
-            'email' => 'nullable|email|max:255',
-            'phone_number' => 'nullable|string',
-            'address' => 'nullable|string',
-            'nif' => 'nullable|string',
-            'birth_date' => 'nullable|date',
-            'height' => 'required|integer',
+            'muscle_group' => 'nullable|string',
             'description' => 'nullable|string',
         ]);
 
@@ -120,46 +119,34 @@ class ClientController extends Controller
             }
         }
 
-        $client = new Client();
-        $client->name = $validated['name'];
-        $client->email = $validated['email'];
-        $client->phone_number = $validated['phone_number'];
-        $client->description = $validated['description'];
-        $client->address = $validated['address'];
-        $client->nif = $validated['nif'];
-        $client->height = $validated['height'];
-        $client->birth_date = $validated['birth_date'];
-        $client->created_by = $user->id;
-        $client->updated_by = $user->id;
-        $client->attachments = json_encode($uploadedFiles);
-        $client->save();
+        $exercise = new Exercise();
+        $exercise->name = $validated['name'];
+        $exercise->muscle_group = $validated['muscle_group'];
+        $exercise->created_by = $user->id;
+        $exercise->updated_by = $user->id;
+        $exercise->attachments = json_encode($uploadedFiles);
+        $exercise->save();
 
-        return response()->json(['success' => true, 'data' => $client]);
+        return response()->json(['success' => true, 'data' => $exercise]);
     }
 
-    public function updateClient(Request $request): \Illuminate\Http\JsonResponse
+    public function updateExercise(Request $request): \Illuminate\Http\JsonResponse
     {
         $user = auth()->user();
-        $user_can_edit = PermissionsHelper::CAN_ACCESS('client', 'edit');
+        $user_can_edit = PermissionsHelper::CAN_ACCESS('exercise', 'edit');
 
         // Valido a permissao sobre editar.
         if (!$user_can_edit) {
             return response()->json([
                 'success' => false,
-                'message' => 'You do not have permission to update the client.'
+                'message' => 'You do not have permission to update the exercise.'
             ], 403); // 403 = Forbidden
         }
 
         $validated = $request->validate([
             'name' => 'required|string|max:100',
-            'email' => 'nullable|email|max:255',
-            'phone_number' => 'nullable|string',
-            'address' => 'nullable|string',
-            'nif' => 'nullable|string',
-            'birth_date' => 'nullable|date',
-            'height' => 'required|integer',
+            'muscle_group' => 'nullable|string',
             'description' => 'nullable|string',
-            'new_attachments.*' => 'file|mimes:jpg,jpeg,png,pdf,svg|max:20480'
         ]);
 
         //Ficheiros
@@ -218,56 +205,51 @@ class ClientController extends Controller
         // Ficheiros finais
         $finalAttachments = array_merge($existingAttachments, $uploadedFiles);
 
-        $client = Client::find($request->id);
-        $client->name = $validated['name'];
-        $client->email = $validated['email'];;
-        $client->phone_number = $validated['phone_number'];
-        $client->address = $validated['address'];
-        $client->nif = $validated['nif'];
-        $client->height = $validated['height'];
-        $client->birth_date = $validated['birth_date'];
-        $client->description = $validated['description'];
-        $client->updated_by = $user->id;
-        $client->attachments = json_encode($finalAttachments);
-        $client->save();
+        $exercise = Exercise::find($request->id);
+        $exercise->name = $validated['name'];
+        $exercise->muscle_group = $validated['muscle_group'];
+        $exercise->description = $validated['description'];
+        $exercise->updated_by = $user->id;
+        $exercise->attachments = json_encode($finalAttachments);
+        $exercise->save();
 
 
-        return response()->json(['success' => true, 'data' => $client]);
+        return response()->json(['success' => true, 'data' => $exercise]);
     }
 
-    public function deleteClient($id): \Illuminate\Http\JsonResponse
+    public function deleteExercise($id): \Illuminate\Http\JsonResponse
     {
-        $user_can_delete = PermissionsHelper::CAN_ACCESS('client', 'delete');
+        $user_can_delete = PermissionsHelper::CAN_ACCESS('exercise', 'delete');
 
         // Valido a permissao sobre remover.
         if (!$user_can_delete) {
             return response()->json([
                 'success' => false,
-                'message' => 'You do not have permission to delete the client.'
+                'message' => 'You do not have permission to delete the exercise.'
             ], 403); // 403 = Forbidden
         }
 
-        // Se tiver permissao vou buscar os dados do client para remover.
-        $client = Client::query()->find($id);
+        // Se tiver permissao vou buscar os dados do exercise para remover.
+        $exercise = Exercise::query()->find($id);
 
-        if (!$client) {
-            return response()->json(['success' => false, 'message' => 'Client not found'], 404);
+        if (!$exercise) {
+            return response()->json(['success' => false, 'message' => 'Exercise not found'], 404);
         }
 
-        $client->delete();
-        return response()->json(['success' => true, 'data' => $client]);
+        $exercise->delete();
+        return response()->json(['success' => true, 'data' => $exercise]);
     }
 
-    private function transformClientData($client): array
+    private function transformExerciseData($exercise): array
     {
         //Permissoes Editar, Eliminar e Detalhes
-        $user_can_edit = PermissionsHelper::CAN_ACCESS('client', 'edit');
-        $user_can_delete = PermissionsHelper::CAN_ACCESS('client', 'delete');
-        $user_can_details = PermissionsHelper::CAN_ACCESS('client', 'details');
+        $user_can_edit = PermissionsHelper::CAN_ACCESS('exercise', 'edit');
+        $user_can_delete = PermissionsHelper::CAN_ACCESS('exercise', 'delete');
+        $user_can_details = PermissionsHelper::CAN_ACCESS('exercise', 'details');
 
         // Ficheiros para um formato que seja aceite pelo el-upload filesList no front end
         // Corremos o array guardado na coluna attachments e contruimos um novo com os objetos definidos no formato desejado (name, url, size, type, status)
-        $attachments = collect(json_decode($client->attachments ?? '[]', true))
+        $attachments = collect(json_decode($exercise->attachments ?? '[]', true))
             ->map(function ($item) {
                 return [
                     'name' => $item['name'] ?? basename($item['path']),
@@ -279,15 +261,10 @@ class ClientController extends Controller
             })->toArray();
 
         return [
-            'id' => $client->id,
-            'name' => $client->name,
-            'email' => $client->email,
-            'phone_number' => $client->phone_number,
-            'address' => $client->address,
-            'nif' => $client->nif,
-            'height' => $client->height,
-            'birth_date' => $client->birth_date,
-            'description' => $client->description,
+            'id' => $exercise->id,
+            'name' => $exercise->name,
+            'muscle_group' => $exercise->muscle_group,
+            'description' => $exercise->description,
             'attachments' => $attachments,
             'can_edit' => $user_can_edit,
             'can_delete' => $user_can_delete,
