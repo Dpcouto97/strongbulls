@@ -12,8 +12,24 @@
             </div>
         </template>
 
+        <!-- ABAS -->
+        <div class="selection-tabs-wrapper">
+            <div class="selection-tabs">
+                <el-button
+                    v-for="tab in tabs"
+                    :key="tab.name"
+                    class="tab"
+                    :class="{ active: selectedTab === tab.name }"
+                    @click="selectedTab = tab.name"
+                    size="small"
+                >
+                    {{ tab.label }}
+                </el-button>
+            </div>
+        </div>
+
         <!--------------- FORMULARIO --------->
-        <el-form :model="form" ref="formRef" label-position="top" label-width="120px" class="space-y-5">
+        <el-form v-if="selectedTab === 'details'" :model="form" ref="formRef" label-position="top" label-width="120px" class="space-y-5">
             <!-- Plan Name -->
             <el-form-item label="Name" prop="name">
                 <template #label>
@@ -67,6 +83,10 @@
             </el-form-item>
         </el-form>
 
+        <div v-else>
+            ESCOLHA DE EXERCICIOS
+        </div>
+
         <!-- Botao GUARDAR O MODAL-->
         <template #footer>
             <el-button
@@ -117,6 +137,12 @@ const form = ref({
     description: "",
     clients: [],
 });
+
+const selectedTab = ref("details");
+const tabs = [
+    { name: "details", label: "DETAILS" },
+    { name: "exercises", label: "EXERCISES" },
+];
 
 const openModal = () => {
     // Ao abrir o modal se estou em modo de edicao e tenho os dados preencho o formulario.
@@ -196,4 +222,49 @@ const resetForm = () => {
 };
 </script>
 
-<style></style>
+<style>
+
+/* Alinha os botões/tabs */
+.selection-tabs-wrapper {
+    display: flex;
+    justify-content: flex-start;
+    width: 100%;
+    padding-left: 1rem;
+    box-sizing: border-box;
+    margin-bottom: 0.5rem;
+}
+
+/* Define a gap entre os botões */
+.selection-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1px;
+}
+
+/* Style default dos botões/tabs de seleção */
+.tab {
+    flex: 0 0 140px;
+    text-align: center;
+    border: 1px solid #ccc;
+    background-color: #f7f7f7;
+    color: #000;
+    font-weight: 500;
+    padding: 8px 0;
+    font-size: 13px;
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease;
+    border-radius: 0;
+}
+
+/* Style aplicado as tabs quando estão ativas */
+.tab.active {
+    background-color: #1D3A32;
+    color: white;
+}
+
+.tab:hover {
+    background-color: #2E5D4F;
+    color: white;
+}
+</style>
