@@ -272,7 +272,6 @@ const submitUpdate = async () => {
 
             // Tratamento dos anexos
             let files = filesUploadRef.value.filesUploaded;
-
             // Novos ficheiros
             files.forEach((file, index) => {
                 if (file.raw) {
@@ -288,7 +287,7 @@ const submitUpdate = async () => {
                 "existing_attachments",
                 JSON.stringify(
                     files
-                        .filter((file) => file.url) // already uploaded
+                        .filter((file) => file.url && file.type && !file.raw) // already uploaded
                         .map((file) => ({
                             name: file.name,
                             path: new URL(file.url).pathname, // extract just the path

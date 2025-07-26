@@ -217,7 +217,7 @@ const submitUpdate = async () => {
                 "existing_attachments",
                 JSON.stringify(
                     files
-                        .filter((file) => file.url) // already uploaded
+                        .filter((file) => file.url && file.type && !file.raw) // already uploaded
                         .map((file) => ({
                             name: file.name,
                             path: new URL(file.url).pathname, // extract just the path
